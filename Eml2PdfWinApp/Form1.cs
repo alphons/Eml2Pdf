@@ -1,4 +1,4 @@
-using Eml2PdfHelper;
+using Eml2Pdf;
 using System.Text;
 
 namespace Eml2PdfWinApp
@@ -12,8 +12,10 @@ namespace Eml2PdfWinApp
 
 		private async void Button1_Click(object sender, EventArgs e)
 		{
+			this.button1.Enabled = false;
 			this.textBox1.Enabled = false;
 			this.textBox2.Enabled = false;
+
 			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 			foreach (var emlPath in Directory.GetFiles(this.textBox1.Text, "*.eml"))
@@ -22,13 +24,14 @@ namespace Eml2PdfWinApp
 
 				var pdfPath = Path.Combine(this.textBox2.Text, $"{name}.pdf");
 
-				var email = await Helper.ParseMultipartEmlAsync(emlPath);
+				var email = await EmailDecoder.ParseEmlAsync(emlPath);
 
-				Helper.CreatePdf(email, pdfPath);
+				PdfHelper.CreatePdf(email, pdfPath);
 			}
 
 			this.textBox1.Enabled = true;
 			this.textBox2.Enabled = true;
+			this.button1.Enabled = true;
 		}
 	}
 }
