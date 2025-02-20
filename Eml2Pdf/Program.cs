@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Eml2PdfHelper;
+using System.Text;
 
 namespace Eml2Pdf;
 
@@ -13,7 +14,7 @@ class Program
 			string emlPath = "input.eml";
 			string pdfPath = "output.pdf";
 
-			var email = Helper.ParseMultipartEml(emlPath);
+			var email = Helper.ParseMultipartEmlAsync(emlPath);
 
 			Helper.CreatePdf(email, pdfPath);
 
