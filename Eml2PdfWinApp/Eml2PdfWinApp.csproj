@@ -17,9 +17,10 @@
 	  <None Update="pdf\MustExist.txt">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
-	  <None Update="Test\20241112_074213.eml">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Test\" />
 	</ItemGroup>
 
 </Project>
