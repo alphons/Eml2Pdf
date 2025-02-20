@@ -1,4 +1,5 @@
 ﻿using PdfSharp.Pdf;
+using System.Runtime.InteropServices;
 using System.Text;
 using TheArtOfDev.HtmlRenderer.PdfSharp;
 
@@ -170,11 +171,14 @@ public class Helper
 		}
 		htmlContent.AppendLine("</table>");
 
-		bool hasHtmlPart = email.Parts.Any(p => p.ContentType.Contains("text/html"));
+		var hasHtmlPart = email.Parts.Any(p => p.ContentType.Contains("text/html"));
+
 		foreach (var part in email.Parts)
 		{
 			if (hasHtmlPart && part.ContentType.Contains("text/plain"))
 				continue;
+
+			Encoding enc = Encoding.GetEncoding(part.Charset);
 
 			if (part.Filename != null)
 				htmlContent.AppendLine($"<p><strong>Attachment:</strong> {part.Filename}</p>");
@@ -182,11 +186,14 @@ public class Helper
 			string decodedContent = part.Content;
 			if (part.TransferEncoding?.ToLower() == "quoted-printable")
 			{
-				decodedContent = DecodeQuotedPrintable(part.Content);
+				decodedContent = DecodeQuotedPrintable(part.Content, enc);
 			}
 
 			if (part.ContentType.Contains("text/html"))
+			{
+				//File.WriteAllText("debug.html", decodedContent, enc);
 				htmlContent.AppendLine(decodedContent);
+			}
 			else
 			{
 				htmlContent.AppendLine("<pre>");
@@ -225,7 +232,7 @@ public class Helper
 			Encoding enc = Encoding.GetEncoding(charset);
 			return encoding.ToUpper() switch
 			{
-				"Q" => DecodeQuotedPrintable(value),
+				"Q" => DecodeQuotedPrintable(value, enc),
 				"B" => enc.GetString(Convert.FromBase64String(value)),
 				_ => input
 			};
@@ -236,7 +243,7 @@ public class Helper
 		}
 	}
 
-	static string DecodeQuotedPrintable(string input)
+	static string DecodeQuotedPrintable(string input, Encoding enc)
 	{
 		var bytes = new List<byte>();
 		for (int i = 0; i < input.Length; i++)
@@ -258,7 +265,7 @@ public class Helper
 				bytes.Add((byte)input[i]);
 			}
 		}
-		return Encoding.UTF8.GetString([.. bytes]);
+		return enc.GetString([.. bytes]);
 	}
 
 	static bool IsHexChar(char c) =>

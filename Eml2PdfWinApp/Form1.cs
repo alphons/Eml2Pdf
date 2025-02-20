@@ -12,20 +12,23 @@ namespace Eml2PdfWinApp
 
 		private async void Button1_Click(object sender, EventArgs e)
 		{
+			this.textBox1.Enabled = false;
+			this.textBox2.Enabled = false;
 			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 			foreach (var emlPath in Directory.GetFiles(this.textBox1.Text, "*.eml"))
 			{
 				var name = Path.GetFileNameWithoutExtension(emlPath);
 
-				var pdfPath = Path.Combine(this.textBox2.Text, name);
+				var pdfPath = Path.Combine(this.textBox2.Text, $"{name}.pdf");
 
 				var email = await Helper.ParseMultipartEmlAsync(emlPath);
 
 				Helper.CreatePdf(email, pdfPath);
 			}
 
-			Console.WriteLine("Conversie voltooid!");
+			this.textBox1.Enabled = true;
+			this.textBox2.Enabled = true;
 		}
 	}
 }

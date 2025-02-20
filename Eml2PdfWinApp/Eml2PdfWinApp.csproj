@@ -13,4 +13,13 @@
 		<ProjectReference Include="..\Eml2Pdf\Eml2Pdf.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="pdf\MustExist.txt">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Test\20241010_104007.eml">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 </Project>

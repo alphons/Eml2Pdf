@@ -40,6 +40,7 @@
 			textBox1.PlaceholderText = "eml directory";
 			textBox1.Size = new Size(269, 23);
 			textBox1.TabIndex = 0;
+			textBox1.Text = "test";
 			// 
 			// textBox2
 			// 
@@ -48,6 +49,7 @@
 			textBox2.PlaceholderText = "pdf directory";
 			textBox2.Size = new Size(269, 23);
 			textBox2.TabIndex = 1;
+			textBox2.Text = "pdf";
 			// 
 			// button1
 			// 
