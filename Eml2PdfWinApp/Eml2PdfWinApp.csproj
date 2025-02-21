@@ -14,13 +14,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="pdf\MustExist.txt">
+	  <None Update="input\**">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Test\" />
+	  <None Update="output\MustExist.txt">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="input\MustExist.txt">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 </Project>

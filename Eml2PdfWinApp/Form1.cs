@@ -33,5 +33,27 @@ namespace Eml2PdfWinApp
 			this.textBox2.Enabled = true;
 			this.button1.Enabled = true;
 		}
+
+		private async void Button2_Click(object sender, EventArgs e)
+		{
+			this.button2.Enabled = false;
+
+			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+			foreach (var emlPath in Directory.GetFiles(this.textBox1.Text, "*.eml"))
+			{
+				var name = Path.GetFileNameWithoutExtension(emlPath);
+
+				var email = await EmailDecoder.ParseEmlAsync(emlPath);
+
+				foreach(var emailA in email.Parts)
+				{
+
+				}
+
+			}
+
+			this.button2.Enabled = true;
+		}
 	}
 }
