@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace EmlFastDecoder;
 
+
 public class FastHelper
 {
 	private static string[] lines = [];
@@ -11,6 +12,40 @@ public class FastHelper
 	private static Regex IsValue = new(@"^\W");
 
 	private static readonly Regex NV = new(@"([^\s;=]+)=([^;]*?)(?=\s*?(?:;|$))");
+
+
+	public class EmailMessage
+	{
+		public Header Header { get; set; }
+		public List<MimePart> Parts { get; set; } = [];
+		public List<Attachment> Attachments { get; set; } = new List<Attachment>();
+
+		// Optionele convenience properties voor veelgebruikte headers
+		public string From => Header.List.FirstOrDefault(h => h.Name.ToLower() == "from").Value;
+		public string To => Header.List.FirstOrDefault(h => h.Name.ToLower() == "to").Value;
+		public string Subject => Header.List.FirstOrDefault(h => h.Name.ToLower() == "subject").Value;
+		public DateTime? Date => DateTime.TryParse(Header.List.FirstOrDefault(h => h.Name.ToLower() == "date").Value, out DateTime date) ? date : (DateTime?)null;
+		public string MessageId => Header.List.FirstOrDefault(h => h.Name.ToLower() == "message-id").Value;
+		public string ContentType => Header.List.FirstOrDefault(h => h.Name.ToLower() == "content-type").Value;
+	}
+
+
+
+	public class MimePart
+	{
+		public string ContentType { get; set; }
+		public string Charset { get; set; }
+		public string Content { get; set; }
+		public string TransferEncoding { get; set; }
+	}
+
+	public class Attachment
+	{
+		public string FileName { get; set; }
+		public string ContentType { get; set; }
+		public string ContentId { get; set; }
+		public byte[] Data { get; set; }
+	}
 
 	public class HeaderValue(string Name, string value)
 	{
@@ -91,40 +126,62 @@ public class FastHelper
 	}
 
 
-	public static async Task DoitAsync(string path)
+	public static async Task<EmailMessage> DoitAsync(string path)
 	{
 		var sw = Stopwatch.StartNew();
 
 		lines = await File.ReadAllLinesAsync(path);
 
-		var header = new Header()
+		var emailMessage = new EmailMessage()
 		{
-			Start = 0
+			Header = new Header()
+			{
+				Start = 0
+			}
 		};
+
 		for (int i = 0; i < lines.Length; i++)
 		{
 			var line = lines[i];
-			if (header.Stop < 0 && line == string.Empty)
-				header.Stop = i;
-
+			if (emailMessage.Header.Stop < 0 && line == string.Empty)
+			{
+				emailMessage.Header.Stop = i;
+				break;
+			}
 		}
 		Debug.WriteLine(sw.ElapsedMilliseconds + "mS");
 
-		foreach (var item in header.List)
+		var contentTypeHeader = emailMessage.Header.List.FirstOrDefault(x => x.Name == "Content-Type");
+		if (contentTypeHeader == null)
+			return emailMessage;
+
+		switch (contentTypeHeader.Value)
 		{
-			Debug.WriteLine($"{item.Name} = {item.Value}");
-			Debug.WriteLine($"=======================");
-			if (item.Properties.Count > 0)
-			{
-				foreach (var prop in item.Properties)
-				{
-					Debug.WriteLine($"{prop.Name} = {prop.Value}");
-				}
-				Debug.WriteLine($"=======================");
-			}
+			default:
+				break;
+			case "multipart/mixed":
+				var boundaryProperty = contentTypeHeader.Properties.FirstOrDefault(x => x.Name == "boundary");
+				if (boundaryProperty.Value == null)
+					return emailMessage;
+				var boundary = boundaryProperty.Value.Trim('"');
+				break;
 		}
 
+		//foreach (var item in emailMessage.Header.List)
+		//{
+		//	Debug.WriteLine($"{item.Name} = {item.Value}");
+		//	Debug.WriteLine($"=======================");
+		//	if (item.Properties.Count > 0)
+		//	{
+		//		foreach (var prop in item.Properties)
+		//		{
+		//			Debug.WriteLine($"{prop.Name} = {prop.Value}");
+		//		}
+		//		Debug.WriteLine($"=======================");
+		//	}
+		//}
 
+		return emailMessage;
 	}
 
 }
