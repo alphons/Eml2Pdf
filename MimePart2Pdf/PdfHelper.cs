@@ -51,7 +51,7 @@ public class PdfHelper
 		var datum = email["Date"];
 
 		if (DateTime.TryParse(datum, out DateTime dtm))
-			datum = dtm.ToString("dddd dd MMMM yyyy HH:mm", Nederland);
+			datum = dtm.ToString("dddd d MMMM yyyy HH:mm", Nederland);
 
 		int index = html.IndexOf("<body");
 		if (index != -1)
@@ -108,6 +108,9 @@ public class PdfHelper
 			// save attachements temporary
 			foreach (var attachment in attachements)
 			{
+				if (string.IsNullOrWhiteSpace(attachment.FileName))
+					continue;
+
 				var path = Path.Combine(dir, attachment.FileName);
 
 				File.WriteAllBytes(path, attachment.BinaryContent);
@@ -133,6 +136,9 @@ public class PdfHelper
 			// clear attachements
 			foreach (var attachment in attachements)
 			{
+				if (string.IsNullOrWhiteSpace(attachment.FileName))
+					continue;
+
 				var path = Path.Combine(dir, attachment.FileName);
 				if (File.Exists(path))
 					File.Delete(path);
