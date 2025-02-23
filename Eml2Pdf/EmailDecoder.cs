@@ -185,7 +185,7 @@ public class EmailDecoder
 
 	private static void ProcessSinglePart(EmailMessage email, string part, string contentType, Dictionary<string, string> parameters, string parentBoundary = null)
 	{
-		var mimePart = new MimePart
+		var mimePart = new MimePart2
 		{
 			ContentType = contentType,
 			Charset = parameters.ContainsKey("charset") ? parameters["charset"] : "utf-8",

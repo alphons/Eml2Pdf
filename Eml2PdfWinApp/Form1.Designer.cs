@@ -32,6 +32,7 @@
 			textBox2 = new TextBox();
 			button1 = new Button();
 			button2 = new Button();
+			textBox3 = new TextBox();
 			SuspendLayout();
 			// 
 			// textBox1
@@ -54,9 +55,9 @@
 			// 
 			// button1
 			// 
-			button1.Location = new Point(336, 37);
+			button1.Location = new Point(320, 98);
 			button1.Name = "button1";
-			button1.Size = new Size(75, 23);
+			button1.Size = new Size(125, 23);
 			button1.TabIndex = 2;
 			button1.Text = "Eml2Pdf";
 			button1.UseVisualStyleBackColor = true;
@@ -64,7 +65,7 @@
 			// 
 			// button2
 			// 
-			button2.Location = new Point(451, 37);
+			button2.Location = new Point(320, 57);
 			button2.Name = "button2";
 			button2.Size = new Size(125, 23);
 			button2.TabIndex = 3;
@@ -72,11 +73,21 @@
 			button2.UseVisualStyleBackColor = true;
 			button2.Click += Button2_Click;
 			// 
+			// textBox3
+			// 
+			textBox3.Location = new Point(35, 120);
+			textBox3.Name = "textBox3";
+			textBox3.PlaceholderText = "pdf directory";
+			textBox3.Size = new Size(269, 23);
+			textBox3.TabIndex = 4;
+			textBox3.Text = "pdf";
+			// 
 			// Form1
 			// 
 			AutoScaleDimensions = new SizeF(7F, 15F);
 			AutoScaleMode = AutoScaleMode.Font;
-			ClientSize = new Size(896, 144);
+			ClientSize = new Size(468, 164);
+			Controls.Add(textBox3);
 			Controls.Add(button2);
 			Controls.Add(button1);
 			Controls.Add(textBox2);
@@ -93,5 +104,6 @@
 		private TextBox textBox2;
 		private Button button1;
 		private Button button2;
+		private TextBox textBox3;
 	}
 }

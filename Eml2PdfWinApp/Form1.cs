@@ -1,4 +1,5 @@
-using Eml2Pdf;
+using Eml2MimePart;
+using System.Diagnostics;
 using System.Text;
 
 namespace Eml2PdfWinApp
@@ -18,21 +19,50 @@ namespace Eml2PdfWinApp
 
 			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-			foreach (var emlPath in Directory.GetFiles(this.textBox1.Text, "*.eml"))
+			foreach (var emlPath in Directory.GetFiles(this.textBox2.Text, "*.eml"))
 			{
 				var name = Path.GetFileNameWithoutExtension(emlPath);
 
-				var pdfPath = Path.Combine(this.textBox2.Text, $"{name}.pdf");
+				var pdfPath = Path.Combine(this.textBox3.Text, $"{name}.pdf");
 
-				var email = await EmailDecoder.ParseEmlAsync(emlPath);
+				var email = await MimePart.ReadEmlAsync(emlPath);
 
-				PdfHelper.CreatePdf(email, pdfPath);
+				Eml2Pdf2.PdfHelper2.CreatePdf(email, pdfPath);
+
 			}
 
 			this.textBox1.Enabled = true;
 			this.textBox2.Enabled = true;
 			this.button1.Enabled = true;
 		}
+
+		static async Task SaveMailAttachementsAsync(string OutputDir, MimePart part)
+		{
+			var contentType = part["Content-Type"];
+
+			if (part["Content-Disposition"].Contains("attachment"))
+			{
+				if (contentType.Contains("message/rfc822"))
+				{
+					if (DateTime.TryParse(part.Parts[0]["Date"], out DateTime dtm))
+					{
+						var outputPath = Path.Combine(OutputDir, $"{dtm:yyyyMMdd-HHmmss}.eml");
+
+						await part.SaveAsync(outputPath, dtm);
+					}
+					else
+					{
+						Debug.WriteLine("No Date found in message/rfc822 attachement");
+					}
+				}
+			}
+
+			foreach (var subpart in part.Parts)
+			{
+				await SaveMailAttachementsAsync(OutputDir, subpart);
+			}
+		}
+
 
 		private async void Button2_Click(object sender, EventArgs e)
 		{
@@ -42,15 +72,9 @@ namespace Eml2PdfWinApp
 
 			foreach (var emlPath in Directory.GetFiles(this.textBox1.Text, "*.eml"))
 			{
-				var name = Path.GetFileNameWithoutExtension(emlPath);
+				var email = await MimePart.ReadEmlAsync(emlPath);
 
-				var email = await EmailDecoder.ParseEmlAsync(emlPath);
-
-				foreach(var emailA in email.Parts)
-				{
-
-				}
-
+				await SaveMailAttachementsAsync(this.textBox2.Text, email);
 			}
 
 			this.button2.Enabled = true;

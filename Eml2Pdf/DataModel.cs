@@ -2,19 +2,19 @@
 
 public class EmailMessage
 {
-	public List<(string Name, string Value)> Headers { get; set; } = new List<(string, string)>();
-	public List<MimePart> Parts { get; set; } = new List<MimePart>();
-	public List<Attachment> Attachments { get; set; } = new List<Attachment>();
+	public List<(string Name, string Value)> Headers { get; set; } = [];
+	public List<MimePart2> Parts { get; set; } = [];
+	public List<Attachment> Attachments { get; set; } = [];
 
 	// Optionele convenience properties voor veelgebruikte headers
-	public string From => Headers.FirstOrDefault(h => h.Name.ToLower() == "from").Value;
-	public string To => Headers.FirstOrDefault(h => h.Name.ToLower() == "to").Value;
-	public string Subject => Headers.FirstOrDefault(h => h.Name.ToLower() == "subject").Value;
-	public DateTime? Date => DateTime.TryParse(Headers.FirstOrDefault(h => h.Name.ToLower() == "date").Value, out DateTime date) ? date : (DateTime?)null;
-	public string MessageId => Headers.FirstOrDefault(h => h.Name.ToLower() == "message-id").Value;
+	public string From => Headers.FirstOrDefault(h => h.Name.Equals("from", StringComparison.CurrentCultureIgnoreCase)).Value;
+	public string To => Headers.FirstOrDefault(h => h.Name.Equals("to", StringComparison.CurrentCultureIgnoreCase)).Value;
+	public string Subject => Headers.FirstOrDefault(h => h.Name.Equals("subject", StringComparison.CurrentCultureIgnoreCase)).Value;
+	public DateTime? Date => DateTime.TryParse(Headers.FirstOrDefault(h => h.Name.Equals("date", StringComparison.CurrentCultureIgnoreCase)).Value, out DateTime date) ? date : (DateTime?)null;
+	public string MessageId => Headers.FirstOrDefault(h => h.Name.Equals("message-id", StringComparison.CurrentCultureIgnoreCase)).Value;
 }
 
-public class MimePart
+public class MimePart2
 {
 	public string ContentType { get; set; }
 	public string Charset { get; set; }
