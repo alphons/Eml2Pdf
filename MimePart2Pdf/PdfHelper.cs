@@ -51,7 +51,7 @@ public class PdfHelper
 		var datum = email["Date"];
 
 		if (DateTime.TryParse(datum, out DateTime dtm))
-			datum = dtm.ToString("dd MMMM yyyy HH:mm", Nederland);
+			datum = dtm.ToString("dddd dd MMMM yyyy HH:mm", Nederland);
 
 		int index = html.IndexOf("<body");
 		if (index != -1)
