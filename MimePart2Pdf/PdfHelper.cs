@@ -75,7 +75,10 @@ public class PdfHelper
 					htmlHeader.AppendLine($"<div><b>Onderwerp:</b> {HtmlEscape(email["Subject"])}</div>");
 					var priority = email["Priority"];
 					if (!string.IsNullOrWhiteSpace(priority))
-						htmlHeader.AppendLine($"<div><b>Urgentie:</b> {HtmlEscape(priority)}</div>");
+						htmlHeader.AppendLine($"<div><b>Prioriteit:</b> {HtmlEscape(priority)}</div>");
+					var importance = email["Importance"];
+					if (!string.IsNullOrWhiteSpace(importance))
+						htmlHeader.AppendLine($"<div><b>Urgentie:</b> {HtmlEscape(importance)}</div>");
 					htmlHeader.AppendLine("<div>&nbsp;</div>");
 				}
 
