@@ -1,6 +1,7 @@
 ﻿using Eml2MimePart;
 using PdfSharp.Pdf;
-using System.Reflection.PortableExecutable;
+using System.Globalization;
+using System.IO;
 using System.Text;
 using TheArtOfDev.HtmlRenderer.PdfSharp;
 
@@ -35,6 +36,9 @@ public class PdfHelper
 		}
 	}
 
+	private static readonly CultureInfo Nederland = new ("nl-NL");
+
+
 	public static void CreatePdf(MimePart email, string pdfPath)
 	{
 		bool UseTable = false;
@@ -43,6 +47,11 @@ public class PdfHelper
 
 		if (string.IsNullOrWhiteSpace(html))
 			return;
+
+		var datum = email["Date"];
+
+		if (DateTime.TryParse(datum, out DateTime dtm))
+			datum = dtm.ToString("dd MMMM yyyy HH:mm", Nederland);
 
 		int index = html.IndexOf("<body");
 		if (index != -1)
@@ -67,7 +76,7 @@ public class PdfHelper
 				else
 				{
 					htmlHeader.AppendLine($"<div><b>Van:</b> {HtmlEscape(email["From"])}</div>");
-					htmlHeader.AppendLine($"<div><b>Verzonden:</b> {HtmlEscape(email["Date"])}</div>");
+					htmlHeader.AppendLine($"<div><b>Verzonden:</b> {datum}</div>");
 					htmlHeader.AppendLine($"<div><b>Aan:</b> {HtmlEscape(email["To"])}</div>");
 					var cc = email["CC"];
 					if(!string.IsNullOrWhiteSpace(cc))
@@ -108,11 +117,16 @@ public class PdfHelper
 		}
 
 		// DEBUGGING
-		File.WriteAllText("test.html", html);
+		//File.WriteAllText("test.html", html);
 
 		PdfDocument pdf = PdfGenerator.GeneratePdf(html, PdfSharp.PageSize.A4);
 
 		pdf.Save(pdfPath);
+
+		//File.SetAttributes(pdfPath, FileAttributes.ReadOnly);
+		File.SetLastWriteTimeUtc(pdfPath, dtm);
+		File.SetCreationTime(pdfPath, dtm);
+
 
 		if (attachements.Count > 0)
 		{
