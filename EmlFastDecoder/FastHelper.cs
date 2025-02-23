@@ -1,108 +1,39 @@
-﻿using System.Diagnostics;
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
 
 namespace EmlFastDecoder;
-
 
 public class FastHelper
 {
 	private static string[] lines = [];
 
-	private static Regex IsValue = new(@"^\W");
+	private static readonly Regex IsValue = new(@"^\W");
 
-	private static readonly Regex NV = new(@"([^\s;=]+)=([^;]*?)(?=\s*?(?:;|$))");
-
-
-	public class EmailMessage
-	{
-		public Header Header { get; set; }
-		public List<MimePart> Parts { get; set; } = [];
-		public List<Attachment> Attachments { get; set; } = new List<Attachment>();
-
-		// Optionele convenience properties voor veelgebruikte headers
-		public string From => Header.List.FirstOrDefault(h => h.Name.ToLower() == "from").Value;
-		public string To => Header.List.FirstOrDefault(h => h.Name.ToLower() == "to").Value;
-		public string Subject => Header.List.FirstOrDefault(h => h.Name.ToLower() == "subject").Value;
-		public DateTime? Date => DateTime.TryParse(Header.List.FirstOrDefault(h => h.Name.ToLower() == "date").Value, out DateTime date) ? date : (DateTime?)null;
-		public string MessageId => Header.List.FirstOrDefault(h => h.Name.ToLower() == "message-id").Value;
-		public string ContentType => Header.List.FirstOrDefault(h => h.Name.ToLower() == "content-type").Value;
-	}
-
-
+	private static readonly Regex Boundary = new(@"\Wboundary=""([^""]*)""");
+	private static readonly Regex RegCharSet = new(@"\Wcharset=""([^""]*)""");
 
 	public class MimePart
 	{
-		public string ContentType { get; set; }
-		public string Charset { get; set; }
-		public string Content { get; set; }
-		public string TransferEncoding { get; set; }
-	}
-
-	public class Attachment
-	{
-		public string FileName { get; set; }
-		public string ContentType { get; set; }
-		public string ContentId { get; set; }
-		public byte[] Data { get; set; }
-	}
-
-	public class HeaderValue(string Name, string value)
-	{
-		public string Name { get; } = Name;
-
-		private readonly string value = value;
-		public string Value
-		{
-			get
-			{
-				var i = value.IndexOf(';');
-				if (i > 0)
-					return value[..i];
-				return value;
-			}
-		}
-
-		private List<(string Name, string Value)>? properties;
-		public List<(string Name, string Value)> Properties
-		{
-			get
-			{
-				if (properties == null)
-				{
-					properties = [];
-					if (value != null)
-					{
-						foreach (Match match in NV.Matches(value))
-						{
-							string name = match.Groups[1].Value;
-							string value = match.Groups[2].Value.Trim(); // Trim voor nette waarden
-							properties.Add((name, value));
-						}
-					}
-				}
-				return properties;
-			}
-		}
-	}
-
-	public class Header
-	{
 		public int Start { get; set; } = -1;
 		public int Stop { get; set; } = -1;
+		public int StartContent { get; set; } = -1;
 
-		private List<HeaderValue>? list;
-
-		public List<HeaderValue> List
+		private List<(string Name, string Value)>? headers = null;
+		public List<(string Name, string Value)> Headers
 		{
 			get
 			{
-				if (list == null)
+				if (headers == null)
 				{
-					list = [];
+					headers = [];
 					for (int i = Start; i < Stop; i++)
 					{
 						var line = lines[i];
+						if (line == string.Empty)
+						{
+							this.StartContent = i + 1;
+							return headers;
+						}
 						var s = line.IndexOf(':');
 						if (s > 0)
 						{
@@ -116,70 +47,143 @@ public class FastHelper
 								i++;
 								value.Append($"{lines[i]}");
 							}
-							list.Add(new HeaderValue(name, value.ToString()));
+							headers.Add((name, value.ToString()));
 						}
 					}
 				}
-				return list;
+				return headers;
 			}
+		}
+
+		public string CharSet
+		{
+			get
+			{
+				var match = RegCharSet.Match(this["Content-Type"]);
+				if (match.Success)
+					return match.Groups[1].Value;
+				else
+					return "utf8";
+			}
+		}
+
+		public string TextContent
+		{
+			get
+			{
+				var charset = CharSet;
+				var encoding = this["Content-Transfer-Encoding"];
+
+				var val = string.Join(Environment.NewLine, lines.Skip(StartContent).Take(Stop - StartContent).ToArray());
+
+				if(encoding == "quoted-printable")
+					val = QuotedPrintableDecoder.Decode(val, charset);
+
+				return val;
+			}
+		}
+
+		public byte[] BinContent
+		{
+			get
+			{
+				var val = string.Join("", lines.Skip(StartContent).Take(Stop - StartContent).ToArray());
+
+				var encoding = this["Content-Transfer-Encoding"];
+				if (encoding == "base64")
+					return Convert.FromBase64String(val);
+				else
+					return Encoding.UTF8.GetBytes(val);
+			}
+		}
+
+		public string this[string name] => this.Headers.FirstOrDefault(x => x.Name == name).Value ?? string.Empty;
+
+
+		private List<MimePart>? parts = null;
+		public List<MimePart> Parts
+		{
+			get
+			{
+				if (parts == null)
+				{
+					parts = [];
+					var contentType = this["Content-Type"];
+					var hasAttachment = this["Content-Disposition"].Contains("attachment");
+					if (contentType == string.Empty)
+						return parts;
+
+					if (hasAttachment)
+					{
+						var attachment = new MimePart()
+						{
+							Start = StartContent,
+							Stop = Stop,
+							StartContent = StartContent
+						};
+						parts.Add(attachment);
+						return parts;
+					}
+
+					if (!contentType.StartsWith("multipart/"))
+						return parts;
+
+					var match = Boundary.Match(contentType);
+					if (!match.Success)
+						return parts;
+					var boundaryId = match.Groups[1].Value;
+					var boundary = $"--{boundaryId}";
+					var count = 0;
+					MimePart? part = null;
+					for (int i = Start; i < Stop; i++)
+					{
+						var line = lines[i];
+						if (line.StartsWith(boundary))
+						{
+							if (part != null)
+								part.Stop = i - 1;
+							if (line.StartsWith($"{boundary}--"))
+								break;
+							part = new MimePart()
+							{
+								Start = i + 1
+							};
+							parts.Add(part);
+							count++;
+							//Debug.WriteLine($"{count} {i + 1} {line}");
+						}
+					}
+				}
+				return parts;
+			}
+		}
+
+		public async Task SaveAsync(string Path) => await SaveAsync(Path, DateTime.Now);
+		public async Task SaveAsync(string Path, DateTime dtm)
+		{
+			await File.WriteAllLinesAsync(Path, lines.Skip(StartContent).Take(Stop - StartContent).ToArray());
+			File.SetAttributes(Path, FileAttributes.ReadOnly);
+			File.SetLastWriteTimeUtc(Path, dtm);
+			File.SetCreationTime(Path, dtm);
 		}
 	}
 
-
-	public static async Task<EmailMessage> DoitAsync(string path)
+	public static void Clear()
 	{
-		var sw = Stopwatch.StartNew();
+		lines = [];
+	}
+
+	public static async Task<MimePart> ReadEmlAsync(string path)
+	{
+		Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 		lines = await File.ReadAllLinesAsync(path);
 
-		var emailMessage = new EmailMessage()
+		MimePart emailMessage = new()
 		{
-			Header = new Header()
-			{
-				Start = 0
-			}
+			Start = 0,
+			Stop = lines.Length
 		};
-
-		for (int i = 0; i < lines.Length; i++)
-		{
-			var line = lines[i];
-			if (emailMessage.Header.Stop < 0 && line == string.Empty)
-			{
-				emailMessage.Header.Stop = i;
-				break;
-			}
-		}
-		Debug.WriteLine(sw.ElapsedMilliseconds + "mS");
-
-		var contentTypeHeader = emailMessage.Header.List.FirstOrDefault(x => x.Name == "Content-Type");
-		if (contentTypeHeader == null)
-			return emailMessage;
-
-		switch (contentTypeHeader.Value)
-		{
-			default:
-				break;
-			case "multipart/mixed":
-				var boundaryProperty = contentTypeHeader.Properties.FirstOrDefault(x => x.Name == "boundary");
-				if (boundaryProperty.Value == null)
-					return emailMessage;
-				var boundary = boundaryProperty.Value.Trim('"');
-				break;
-		}
-
-		//foreach (var item in emailMessage.Header.List)
-		//{
-		//	Debug.WriteLine($"{item.Name} = {item.Value}");
-		//	Debug.WriteLine($"=======================");
-		//	if (item.Properties.Count > 0)
-		//	{
-		//		foreach (var prop in item.Properties)
-		//		{
-		//			Debug.WriteLine($"{prop.Name} = {prop.Value}");
-		//		}
-		//		Debug.WriteLine($"=======================");
-		//	}
-		//}
 
 		return emailMessage;
 	}
