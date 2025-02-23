@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace EmlFastDecoder;
+namespace Eml2MimePart;
 
 public partial class RegexHelper
 {

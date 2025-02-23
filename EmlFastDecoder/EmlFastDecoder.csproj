@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Eml2MimePart\Eml2MimePart.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="input\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -1,4 +1,5 @@
-﻿using EmlFastDecoder;
+﻿using Eml2MimePart;
+
 using System.Diagnostics;
 
 static async Task ShowPartsAsync(int Depth, MimePart part)

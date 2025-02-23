@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eml2PdfWinApp", "Eml2PdfWin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmlFastDecoder", "EmlFastDecoder\EmlFastDecoder.csproj", "{7457C78E-ABB7-455C-9BAE-46040997C2B4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eml2MimePart", "Eml2MimePart\Eml2MimePart.csproj", "{6E7CB274-7632-4D7D-B3CC-4EDE7AFEB6A9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{7457C78E-ABB7-455C-9BAE-46040997C2B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7457C78E-ABB7-455C-9BAE-46040997C2B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7457C78E-ABB7-455C-9BAE-46040997C2B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E7CB274-7632-4D7D-B3CC-4EDE7AFEB6A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E7CB274-7632-4D7D-B3CC-4EDE7AFEB6A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E7CB274-7632-4D7D-B3CC-4EDE7AFEB6A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E7CB274-7632-4D7D-B3CC-4EDE7AFEB6A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

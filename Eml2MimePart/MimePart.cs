@@ -1,6 +1,7 @@
-﻿using System.Text;
+﻿using EmlFastDecoder;
+using System.Text;
 
-namespace EmlFastDecoder;
+namespace Eml2MimePart;
 public class MimePart(string[] lines)
 {
 	private const int InvalidIndex = -1;
@@ -110,8 +111,8 @@ public class MimePart(string[] lines)
 		var disposition = this["Content-Disposition"];
 		if (!string.IsNullOrEmpty(disposition) && disposition.Split(';')[0].Trim().Equals("attachment", StringComparison.OrdinalIgnoreCase))
 		{
-			return 
-			[ 
+			return
+			[
 				new(_lines)
 				{
 					_start = _startContent,
