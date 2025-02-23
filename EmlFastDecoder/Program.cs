@@ -1,14 +1,16 @@
 ﻿using EmlFastDecoder;
 using System.Diagnostics;
 
-static async Task ShowPartsAsync(int Depth, FastHelper.MimePart part)
+static async Task ShowPartsAsync(int Depth, MimePart part)
 {
 	var contentType = part["Content-Type"];
 
-	for (var i = 0; i < Depth; i++)
-		Debug.Write('\t');
 	if (contentType != string.Empty)
+	{
+		for (var i = 0; i < Depth; i++)
+			Debug.Write('\t');
 		Debug.WriteLine(contentType);
+	}
 
 	if (part["Content-Disposition"].Contains("attachment"))
 	{
@@ -37,13 +39,12 @@ static async Task ShowPartsAsync(int Depth, FastHelper.MimePart part)
 	{
 		await ShowPartsAsync(Depth, subpart);
 	}
-	Depth--;
 }
 
 var sw = Stopwatch.StartNew();
 
 //var email = await FastHelper.ReadEmlAsync(@"input\20240603-135130.eml");
-var email = await FastHelper.ReadEmlAsync(@"input\jun-jul 2024.eml");
+var email = await MimePart.ReadEmlAsync(@"input\jun-jul 2024.eml");
 
 await ShowPartsAsync(0, email);
 
