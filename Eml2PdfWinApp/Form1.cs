@@ -1,4 +1,5 @@
 using Eml2MimePart;
+using MimePart2Pdf;
 using System.Diagnostics;
 using System.Text;
 
@@ -27,7 +28,7 @@ namespace Eml2PdfWinApp
 
 				var email = await MimePart.ReadEmlAsync(emlPath);
 
-				Eml2Pdf2.PdfHelper2.CreatePdf(email, pdfPath);
+				PdfHelper.CreatePdf(email, pdfPath);
 
 			}
 

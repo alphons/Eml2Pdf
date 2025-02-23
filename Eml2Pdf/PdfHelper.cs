@@ -1,80 +1,101 @@
-﻿using PdfSharp.Pdf;
-using System.Net.Mail;
+﻿using Eml2MimePart;
+using PdfSharp.Pdf;
 using System.Text;
 using TheArtOfDev.HtmlRenderer.PdfSharp;
 
-namespace Eml2Pdf;
+namespace MimePart2Pdf;
 
 public class PdfHelper
 {
 	private static string HtmlEscape(string text) => text.Replace("<", "&lt;").Replace(">", "&gt;");
-	public static void CreatePdf(EmailMessage email, string pdfPath)
+
+	private static string GetHtml(MimePart email)
 	{
-
-		var htmlContent = new StringBuilder();
-		htmlContent.AppendLine("<html><head><meta charset='UTF-8'></head><body style='font-family: Arial, sans-serif;'>");
-
-		htmlContent.AppendLine("<table border='1' style='width: 100%; border-collapse: collapse; margin-bottom: 20px;'>");
-		string[] importantHeaders = ["From", "Subject", "To", "Date"];
-		foreach (var header in importantHeaders)
-		{
-			htmlContent.AppendLine("<tr>");
-			htmlContent.AppendLine($"<td style='padding: 5px;'>{header}</td>");
-			htmlContent.AppendLine($"<td style='padding: 5px;'>{HtmlEscape(email.Headers.FirstOrDefault(h => h.Name == header).Value)}</td>");
-			htmlContent.AppendLine("</tr>");
-		}
-		htmlContent.AppendLine("</table>");
-
-		var hasHtmlPart = email.Parts.Any(p => p.ContentType.Contains("text/html"));
-
+		if (email["Content-Type"].Contains("text/html"))
+			return email.TextContent;
 		foreach (var part in email.Parts)
 		{
-			if (hasHtmlPart && part.ContentType.Contains("text/plain"))
-				continue;
+			var html = GetHtml(part);
+			if (!string.IsNullOrEmpty(html))
+				return html;
+		}
+		return string.Empty;
+	}
 
-			if (part.ContentType.Contains("text/html"))
+	public static void GetAttachements(List<MimePart> attachements, MimePart part)
+	{
+		var contentType = part["Content-Type"];
+		if (!string.IsNullOrWhiteSpace(contentType) && !contentType.StartsWith("text/") && !contentType.StartsWith("multipart/"))
+			attachements.Add(part);
+
+		foreach (var subpart in part.Parts)
+		{
+			GetAttachements(attachements, subpart);
+		}
+	}
+
+	public static void CreatePdf(MimePart email, string pdfPath)
+	{
+		var html = GetHtml(email);
+
+		if (string.IsNullOrWhiteSpace(html))
+			return;
+
+		int index = html.IndexOf("<body");
+		if (index != -1)
+		{
+			int eindIndex = html.IndexOf('>', index);
+			if (eindIndex != -1)
 			{
-				//File.WriteAllText("debug.html", part.Content, Encoding.GetEncoding(part.Charset));
-				htmlContent.AppendLine(part.Content);
-			}
-			else
-			{
-				htmlContent.AppendLine("<pre>");
-				htmlContent.AppendLine(part.Content);
-				htmlContent.AppendLine("</pre>");
+				var htmlTable = new StringBuilder(Environment.NewLine);
+				htmlTable.AppendLine("<table border='1' style='width: 100%; border-collapse: collapse; margin-bottom: 20px;'>");
+				string[] importantHeaders = ["From", "Subject", "To", "Date"];
+				foreach (var header in importantHeaders)
+				{
+					htmlTable.AppendLine("<tr>");
+					htmlTable.AppendLine($"<td style='padding: 5px; width:60px'>{header}</td>");
+					htmlTable.AppendLine($"<td style='padding: 5px;'>{HtmlEscape(email[header])}</td>");
+					htmlTable.AppendLine("</tr>");
+				}
+				htmlTable.Append("</table>");
+				html = html.Insert(eindIndex + 1, htmlTable.ToString());
 			}
 		}
-
-		htmlContent.AppendLine("</body></html>");
 
 		var dir = Path.Combine(AppContext.BaseDirectory, "tmp");
 
-		if (email.Attachments.Count > 0)
+		List<MimePart> attachements = [];
+		GetAttachements(attachements, email);
+
+		if (attachements.Count > 0)
 		{
 			Directory.CreateDirectory(dir);
 
 			// save attachements temporary
-			foreach (var attachment in email.Attachments)
+			foreach (var attachment in attachements)
 			{
 				var path = Path.Combine(dir, attachment.FileName);
-				File.WriteAllBytes(path, attachment.Data);
-				htmlContent.Replace($"cid:{attachment.ContentId}", $"file:///{path.Replace('\\','/')}");
+
+				File.WriteAllBytes(path, attachment.BinaryContent);
+
+				html = html.Replace($"cid:{attachment.ContentId}", $"file:///{path.Replace('\\', '/')}");
 			}
-			File.WriteAllText("test.html", htmlContent.ToString());
 		}
 
+		// DEBUGGING
+		File.WriteAllText("test.html", html);
 
-		PdfDocument pdf = PdfGenerator.GeneratePdf(htmlContent.ToString(), PdfSharp.PageSize.A4);
+		PdfDocument pdf = PdfGenerator.GeneratePdf(html, PdfSharp.PageSize.A4);
 
 		pdf.Save(pdfPath);
 
-		if (email.Attachments.Count > 0)
+		if (attachements.Count > 0)
 		{
 			// clear attachements
-			foreach (var attachment in email.Attachments)
+			foreach (var attachment in attachements)
 			{
 				var path = Path.Combine(dir, attachment.FileName);
-				if(File.Exists(path))
+				if (File.Exists(path))
 					File.Delete(path);
 			}
 		}
