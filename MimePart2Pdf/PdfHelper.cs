@@ -1,5 +1,6 @@
 ﻿using Eml2MimePart;
 using PdfSharp.Pdf;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using TheArtOfDev.HtmlRenderer.PdfSharp;
 
@@ -36,6 +37,8 @@ public class PdfHelper
 
 	public static void CreatePdf(MimePart email, string pdfPath)
 	{
+		bool UseTable = false;
+
 		var html = GetHtml(email);
 
 		if (string.IsNullOrWhiteSpace(html))
@@ -47,18 +50,37 @@ public class PdfHelper
 			int eindIndex = html.IndexOf('>', index);
 			if (eindIndex != -1)
 			{
-				var htmlTable = new StringBuilder(Environment.NewLine);
-				htmlTable.AppendLine("<table border='1' style='width: 100%; border-collapse: collapse; margin-bottom: 20px;'>");
-				string[] importantHeaders = ["From", "Subject", "To", "Date"];
-				foreach (var header in importantHeaders)
+				var htmlHeader = new StringBuilder(Environment.NewLine);
+				if (UseTable)
 				{
-					htmlTable.AppendLine("<tr>");
-					htmlTable.AppendLine($"<td style='padding: 5px; width:60px'>{header}</td>");
-					htmlTable.AppendLine($"<td style='padding: 5px;'>{HtmlEscape(email[header])}</td>");
-					htmlTable.AppendLine("</tr>");
+					htmlHeader.AppendLine("<table border='1' style='width: 100%; border-collapse: collapse; margin-bottom: 20px;'>");
+					string[] importantHeaders = ["From", "Subject", "To", "Date"];
+					foreach (var header in importantHeaders)
+					{
+						htmlHeader.AppendLine("<tr>");
+						htmlHeader.AppendLine($"<td style='padding: 5px; width:60px'>{header}</td>");
+						htmlHeader.AppendLine($"<td style='padding: 5px;'>{HtmlEscape(email[header])}</td>");
+						htmlHeader.AppendLine("</tr>");
+					}
+					htmlHeader.Append("</table>");
 				}
-				htmlTable.Append("</table>");
-				html = html.Insert(eindIndex + 1, htmlTable.ToString());
+				else
+				{
+					htmlHeader.AppendLine($"<div><b>Van:</b> {HtmlEscape(email["From"])}</div>");
+					htmlHeader.AppendLine($"<div><b>Verzonden:</b> {HtmlEscape(email["Date"])}</div>");
+					htmlHeader.AppendLine($"<div><b>Aan:</b> {HtmlEscape(email["To"])}</div>");
+					var cc = email["CC"];
+					if(!string.IsNullOrWhiteSpace(cc))
+						htmlHeader.AppendLine($"<div><b>Cc:</b> {HtmlEscape(cc)}</div>");
+					htmlHeader.AppendLine($"<div><b>Onderwerp:</b> {HtmlEscape(email["Subject"])}</div>");
+					var priority = email["Priority"];
+					if (!string.IsNullOrWhiteSpace(priority))
+						htmlHeader.AppendLine($"<div><b>Urgentie:</b> {HtmlEscape(priority)}</div>");
+					htmlHeader.AppendLine("<div>&nbsp;</div>");
+				}
+
+
+				html = html.Insert(eindIndex + 1, htmlHeader.ToString());
 			}
 		}
 

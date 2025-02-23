@@ -1,4 +1,4 @@
-﻿using System.Net.Mail;
+﻿
 using System.Text;
 
 namespace Eml2MimePart;
@@ -29,14 +29,13 @@ public class MimePart(string[] lines)
 			if (s > 0)
 			{
 				var name = line[..s];
-				var decodedValue = Helpers.DecodeMimeEncodedWord(line[(s + 1)..].Trim());
-				var value = new StringBuilder(decodedValue);
+				var value = new StringBuilder(line[(s + 1)..].Trim());
 				// NB: Laatste regel wordt genegeerd als deze exact op 'stop' valt, wat bij MIME-headers zeldzaam is.
 				while (i < _stop - 1 && RegexHelper.IsValue.IsMatch(_lines[i + 1]))
 				{
 					value.Append(_lines[++i]);
 				}
-				result.Add((name, value.ToString()));
+				result.Add((name, Helpers.DecodeMimeEncodedWord(value.ToString())));
 			}
 		}
 		return result;

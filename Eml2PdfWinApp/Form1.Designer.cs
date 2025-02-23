@@ -92,8 +92,10 @@
 			Controls.Add(button1);
 			Controls.Add(textBox2);
 			Controls.Add(textBox1);
+			FormBorderStyle = FormBorderStyle.Fixed3D;
+			MaximizeBox = false;
 			Name = "Form1";
-			Text = "Form1";
+			Text = "Eml workbench - Annet Zwanenburg";
 			ResumeLayout(false);
 			PerformLayout();
 		}
