@@ -10,7 +10,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Eml2Pdf\MimePart2Pdf.csproj" />
+	  <ProjectReference Include="..\MimePart2Pdf\MimePart2Pdf.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

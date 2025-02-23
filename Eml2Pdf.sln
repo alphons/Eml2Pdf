@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35728.132
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MimePart2Pdf", "Eml2Pdf\MimePart2Pdf.csproj", "{D93A802A-2709-4781-B536-700ABCA34A1D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MimePart2Pdf", "MimePart2Pdf\MimePart2Pdf.csproj", "{D93A802A-2709-4781-B536-700ABCA34A1D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eml2PdfWinApp", "Eml2PdfWinApp\Eml2PdfWinApp.csproj", "{3B67B712-8408-4F5C-B40E-66F255A61EC7}"
 EndProject
