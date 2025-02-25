@@ -28,34 +28,35 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			textBox1 = new TextBox();
-			textBox2 = new TextBox();
+			txtInput = new TextBox();
+			txtOutput = new TextBox();
 			button1 = new Button();
 			button2 = new Button();
 			textBox3 = new TextBox();
+			txtLog = new TextBox();
 			SuspendLayout();
 			// 
 			// textBox1
 			// 
-			textBox1.Location = new Point(35, 37);
-			textBox1.Name = "textBox1";
-			textBox1.PlaceholderText = "input directory";
-			textBox1.Size = new Size(269, 23);
-			textBox1.TabIndex = 0;
-			textBox1.Text = "input";
+			txtInput.Location = new Point(12, 12);
+			txtInput.Name = "textBox1";
+			txtInput.PlaceholderText = "input directory";
+			txtInput.Size = new Size(269, 23);
+			txtInput.TabIndex = 0;
+			txtInput.Text = "input";
 			// 
 			// textBox2
 			// 
-			textBox2.Location = new Point(35, 80);
-			textBox2.Name = "textBox2";
-			textBox2.PlaceholderText = "output directory";
-			textBox2.Size = new Size(269, 23);
-			textBox2.TabIndex = 1;
-			textBox2.Text = "output";
+			txtOutput.Location = new Point(12, 57);
+			txtOutput.Name = "textBox2";
+			txtOutput.PlaceholderText = "output directory";
+			txtOutput.Size = new Size(269, 23);
+			txtOutput.TabIndex = 1;
+			txtOutput.Text = "output";
 			// 
 			// button1
 			// 
-			button1.Location = new Point(320, 98);
+			button1.Location = new Point(287, 79);
 			button1.Name = "button1";
 			button1.Size = new Size(125, 23);
 			button1.TabIndex = 2;
@@ -65,7 +66,7 @@
 			// 
 			// button2
 			// 
-			button2.Location = new Point(320, 57);
+			button2.Location = new Point(287, 35);
 			button2.Name = "button2";
 			button2.Size = new Size(125, 23);
 			button2.TabIndex = 3;
@@ -75,25 +76,37 @@
 			// 
 			// textBox3
 			// 
-			textBox3.Location = new Point(35, 120);
+			textBox3.Location = new Point(12, 99);
 			textBox3.Name = "textBox3";
 			textBox3.PlaceholderText = "pdf directory";
 			textBox3.Size = new Size(269, 23);
 			textBox3.TabIndex = 4;
 			textBox3.Text = "pdf";
 			// 
+			// textBox4
+			// 
+			txtLog.AcceptsReturn = true;
+			txtLog.AcceptsTab = true;
+			txtLog.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+			txtLog.Location = new Point(12, 143);
+			txtLog.Multiline = true;
+			txtLog.Name = "textBox4";
+			txtLog.ReadOnly = true;
+			txtLog.ScrollBars = ScrollBars.Both;
+			txtLog.Size = new Size(508, 280);
+			txtLog.TabIndex = 5;
+			// 
 			// Form1
 			// 
 			AutoScaleDimensions = new SizeF(7F, 15F);
 			AutoScaleMode = AutoScaleMode.Font;
-			ClientSize = new Size(468, 164);
+			ClientSize = new Size(532, 435);
+			Controls.Add(txtLog);
 			Controls.Add(textBox3);
 			Controls.Add(button2);
 			Controls.Add(button1);
-			Controls.Add(textBox2);
-			Controls.Add(textBox1);
-			FormBorderStyle = FormBorderStyle.Fixed3D;
-			MaximizeBox = false;
+			Controls.Add(txtOutput);
+			Controls.Add(txtInput);
 			Name = "Form1";
 			Text = "Eml workbench - Annet Zwanenburg";
 			ResumeLayout(false);
@@ -102,10 +115,11 @@
 
 		#endregion
 
-		private TextBox textBox1;
-		private TextBox textBox2;
+		private TextBox txtInput;
+		private TextBox txtOutput;
 		private Button button1;
 		private Button button2;
 		private TextBox textBox3;
+		private TextBox txtLog;
 	}
 }
