@@ -34,21 +34,23 @@
 			button2 = new Button();
 			textBox3 = new TextBox();
 			txtLog = new TextBox();
+			button3 = new Button();
+			txtHtml = new TextBox();
 			SuspendLayout();
 			// 
-			// textBox1
+			// txtInput
 			// 
 			txtInput.Location = new Point(12, 12);
-			txtInput.Name = "textBox1";
+			txtInput.Name = "txtInput";
 			txtInput.PlaceholderText = "input directory";
 			txtInput.Size = new Size(269, 23);
 			txtInput.TabIndex = 0;
 			txtInput.Text = "input";
 			// 
-			// textBox2
+			// txtOutput
 			// 
 			txtOutput.Location = new Point(12, 57);
-			txtOutput.Name = "textBox2";
+			txtOutput.Name = "txtOutput";
 			txtOutput.PlaceholderText = "output directory";
 			txtOutput.Size = new Size(269, 23);
 			txtOutput.TabIndex = 1;
@@ -56,7 +58,7 @@
 			// 
 			// button1
 			// 
-			button1.Location = new Point(287, 79);
+			button1.Location = new Point(287, 142);
 			button1.Name = "button1";
 			button1.Size = new Size(125, 23);
 			button1.TabIndex = 2;
@@ -76,31 +78,52 @@
 			// 
 			// textBox3
 			// 
-			textBox3.Location = new Point(12, 99);
+			textBox3.Location = new Point(12, 143);
 			textBox3.Name = "textBox3";
 			textBox3.PlaceholderText = "pdf directory";
 			textBox3.Size = new Size(269, 23);
 			textBox3.TabIndex = 4;
 			textBox3.Text = "pdf";
 			// 
-			// textBox4
+			// txtLog
 			// 
 			txtLog.AcceptsReturn = true;
 			txtLog.AcceptsTab = true;
 			txtLog.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-			txtLog.Location = new Point(12, 143);
+			txtLog.Location = new Point(12, 172);
 			txtLog.Multiline = true;
-			txtLog.Name = "textBox4";
+			txtLog.Name = "txtLog";
 			txtLog.ReadOnly = true;
 			txtLog.ScrollBars = ScrollBars.Both;
-			txtLog.Size = new Size(508, 280);
+			txtLog.Size = new Size(508, 251);
 			txtLog.TabIndex = 5;
+			// 
+			// button3
+			// 
+			button3.Location = new Point(287, 95);
+			button3.Name = "button3";
+			button3.Size = new Size(125, 23);
+			button3.TabIndex = 6;
+			button3.Text = "Eml2Html";
+			button3.UseVisualStyleBackColor = true;
+			button3.Click += ButtonEml2Html_Click;
+			// 
+			// txtHtml
+			// 
+			txtHtml.Location = new Point(12, 95);
+			txtHtml.Name = "txtHtml";
+			txtHtml.PlaceholderText = "output directory";
+			txtHtml.Size = new Size(269, 23);
+			txtHtml.TabIndex = 7;
+			txtHtml.Text = "html";
 			// 
 			// Form1
 			// 
 			AutoScaleDimensions = new SizeF(7F, 15F);
 			AutoScaleMode = AutoScaleMode.Font;
 			ClientSize = new Size(532, 435);
+			Controls.Add(txtHtml);
+			Controls.Add(button3);
 			Controls.Add(txtLog);
 			Controls.Add(textBox3);
 			Controls.Add(button2);
@@ -121,5 +144,7 @@
 		private Button button2;
 		private TextBox textBox3;
 		private TextBox txtLog;
+		private Button button3;
+		private TextBox txtHtml;
 	}
 }

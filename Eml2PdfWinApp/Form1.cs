@@ -1,6 +1,7 @@
 using Eml2MimePart;
 using MimePart2Pdf;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 
 namespace Eml2PdfWinApp;
@@ -53,11 +54,11 @@ public partial class Form1 : Form
 					{
 						await part.SaveAsync(outputPath, dtm);
 					}
-					catch(Exception ex)
+					catch (Exception ex)
 					{
 						log.Invoke((MethodInvoker)delegate
 						{
-							log.Text = $"{outputPath} {ex.Message}"; 
+							log.Text = $"{outputPath} {ex.Message}";
 						});
 					}
 				}
@@ -70,7 +71,7 @@ public partial class Form1 : Form
 
 		foreach (var subpart in part.Parts)
 		{
-			await SaveMailAttachementsAsync(log,OutputDir, subpart);
+			await SaveMailAttachementsAsync(log, OutputDir, subpart);
 		}
 	}
 
@@ -89,5 +90,63 @@ public partial class Form1 : Form
 		}
 
 		this.button2.Enabled = true;
+	}
+
+	private static string GetHtml(MimePart email)
+	{
+		if (email["Content-Type"].Contains("text/html"))
+			return email.TextContent;
+		foreach (var part in email.Parts)
+		{
+			var html = GetHtml(part);
+			if (!string.IsNullOrEmpty(html))
+				return html;
+		}
+		return string.Empty;
+	}
+
+
+	private async void ButtonEml2Html_Click(object sender, EventArgs e)
+	{
+		this.button3.Enabled = false;
+
+		Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+		var htmlDir = this.txtHtml.Text;
+
+		foreach (var emlPath in Directory.GetFiles(this.txtOutput.Text, "*.eml"))
+		{
+			var email = await MimePart.ReadEmlAsync(emlPath);
+
+			var html = GetHtml(email);
+
+			if (string.IsNullOrWhiteSpace(html))
+				return;
+
+			var name = Path.GetFileNameWithoutExtension(emlPath);
+
+			var dtm = DateTime.ParseExact(name, "yyyyMMdd-HHmmss", null);
+
+			var output = Path.Combine(htmlDir, name + ".html");
+
+			try
+			{
+				await File.WriteAllTextAsync(output, html);
+
+				//File.SetAttributes(output, FileAttributes.ReadOnly);
+				File.SetLastWriteTimeUtc(output, dtm);
+				File.SetCreationTime(output, dtm);
+
+			}
+			catch(Exception eee)
+			{
+				this.txtLog.Invoke((MethodInvoker)delegate
+				{
+					this.txtLog.Text = $"{name} {eee.Message}";
+				});
+			}
+		}
+
+		this.button3.Enabled = true;
 	}
 }

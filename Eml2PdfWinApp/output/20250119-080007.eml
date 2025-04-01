@@ -1,0 +1,565 @@
+﻿Delivered-To: it@moneywise.nl
+Received: by 2002:a05:7301:24a1:b0:146:49ad:930f with SMTP id gy33csp2565950dyb;
+        Sat, 18 Jan 2025 23:00:08 -0800 (PST)
+X-Received: by 2002:a05:600c:138a:b0:434:9d62:aa23 with SMTP id 5b1f17b1804b1-4389142e88dmr72198965e9.20.1737270008338;
+        Sat, 18 Jan 2025 23:00:08 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1737270008; cv=none;
+        d=google.com; s=arc-20240605;
+        b=PfFpoLIhbMHCNGI6TQGdqg0ylOPI8gF1VP9BHH8Blg5nULogAEiYg29KKkqi+j4R/1
+         0tpAjeTZkKZV5xio/CxVIWZF/jHbV3V9a4ynBCVHpaNz6Z+LavhpmEbfYZE3BW/OF04G
+         qJ81sGauBbLcXOw2AzwDIkBVAkal1KvLbEwmXZPDUdicg1YvUacWMXaFuO/8Fg/l9Ym2
+         n22Smaoeyg22KoY/29jeLr0xR38xwvgK9ceXs+XuttY6/p4lFEwg/66pH8suJmdb5Scp
+         3edjFjSCAo0O3hiH6ldLkQFE++WnNUTPJbS9FrZNXvMqiKydlpwDz6m/gWFGSn6Hwgq2
+         vzpw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:subject:date:to:from:mime-version
+         :message-id:dkim-signature;
+        bh=rpGd/tjJ2cQaRnsoOHgjWzEq2/TezENZvLelYK9ipIw=;
+        fh=ffF2PIVy90LPDgbfQDteyP4Lu8LcYx6IA8VZ1c+ECUs=;
+        b=McHFKARjqF8KcZS3PW8F2w7l8qncTLQUEp37h5nmXszr+0irK3YwxhVuIdId3mE9o8
+         MJqDqzrM7AYNw1N5ZPns5JwBlJgsqrMqpY5nRiu6bZlqBCCCxofmdw710TmxM0IO8pC+
+         KLzk9hqKZww9SaYd7QbYEIBDBHqmBEelLzQCwllyRfiAhOWs14KOcP2TEOYOoWtbOYcu
+         eE1jh88ZGY89EW3Sa4ui5+t5HitIi/f6o9fQk9QxWyPIqSNwxJ8BhS9oIyBnIoFltXcc
+         gfRzuba42S4uoTb2rFzrYX95MDd5SO4KEM5+Hup537mj0LUPCgHgoZZtoj9+RDoE1Loz
+         GjnA==;
+        dara=google.com
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@moneywise-nl.20230601.gappssmtp.com header.s=20230601 header.b=136E+Mp+;
+       spf=pass (google.com: domain of it@moneywise.nl designates 209.85.220.97 as permitted sender) smtp.mailfrom=it@moneywise.nl;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=moneywise.nl;
+       dara=pass header.i=@moneywise.nl
+Return-Path: <it@moneywise.nl>
+Received: from mail-sor-f97.google.com (mail-sor-f97.google.com. [209.85.220.97])
+        by mx.google.com with SMTPS id 5b1f17b1804b1-43890367f42sor18657325e9.0.2025.01.18.23.00.08
+        for <it@moneywise.nl>
+        (Google Transport Security);
+        Sat, 18 Jan 2025 23:00:08 -0800 (PST)
+Received-SPF: pass (google.com: domain of it@moneywise.nl designates 209.85.220.97 as permitted sender) client-ip=209.85.220.97;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@moneywise-nl.20230601.gappssmtp.com header.s=20230601 header.b=136E+Mp+;
+       spf=pass (google.com: domain of it@moneywise.nl designates 209.85.220.97 as permitted sender) smtp.mailfrom=it@moneywise.nl;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=moneywise.nl;
+       dara=pass header.i=@moneywise.nl
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=moneywise-nl.20230601.gappssmtp.com; s=20230601; t=1737270008; x=1737874808; darn=moneywise.nl;
+        h=content-transfer-encoding:subject:date:to:from:mime-version
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=rpGd/tjJ2cQaRnsoOHgjWzEq2/TezENZvLelYK9ipIw=;
+        b=136E+Mp+CPAq8NUY19LWX+4shJd6fSrEih7Hsvhz4/9oInxmOiSSU4KY7aeZ/DeUv0
+         KeUlGCmoYGRii44PjtRcdooUsZmSggIlQQGvVUNOtxcIV+Jm8VYmiDLpFw4G64g3z35s
+         iVGngMVes/Gy341Xgx3msnxQKnJBIw2tFhw1Er9XX0vvZilvqtCnAL9AIlpx+v8MlOV+
+         U0xBCy7iCk/QODQCZ+tyJRLVmTzKKc6q+IkEaGb88zV9mVfuzVx5tA+J22HYlyunyuUE
+         B5UyY9WT0otyyMVsj65k2NSSiu2O4Mamm5E/sw6fn+wd0f8mb0xzAVRTs715vmPeAsdC
+         WmcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737270008; x=1737874808;
+        h=content-transfer-encoding:subject:date:to:from:mime-version
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rpGd/tjJ2cQaRnsoOHgjWzEq2/TezENZvLelYK9ipIw=;
+        b=jjXaFWSNdd6DhJZUYxt8cObkP0fZ5J4qNpd4r8yeOkN97WIVsUP/itBkjEUo5U22uu
+         6jFXygjyjaMRV18Nh16XTdg4L9ocWzkEHcapl7WWsHcqtlOPIKDl/Vkfgn4Wt7LorH67
+         lJ1EpXf3S91AZK9TIih8s+yTzOQ4l1GdEY+MUnfUztcCK88esLHGQrL6PD59vH1/uVb/
+         RwG/vVGA3MIIjTlNCyiUhk5+hFQsPdZDQPpCtd8tEPs2Iwg2qpMBQHskHAM858lnWbuK
+         kBxaWDC3pPbaH/JycSB4IXQQq+VXlzI9DiGg7uV9TNaHgjzT0Ucz4U0NupbZmkpQtXw3
+         pl8w==
+X-Gm-Message-State: AOJu0YzUT2AQ9VXbK6031xtolzEvlgJQJdBtAMZSARtdRNdwUTzdOScl
+	ot0MeqohyqddxNyXpYT5dX8dH1jpwlw+byRI0YEGN2JRemHz6ntNRgK9NDL0KzpZckzLSBwpU0d
+	NO7pqUerMRYqslzkYJcZ+2zpcqvLOQFpw2DEPs0XALA==
+X-Gm-Gg: ASbGnctTuIwIIpqapi5loS2VFRgcCNm84EsqpNTUWlfgPxDLxnjIpLqjD/uUBzT948u
+	YWY1A/QNs53AQ5DU/s6B6dd0+4MljHa5TdtEScgMLms+km99GwBiCQyTZ6vkzmFl8aWLVS6vxSo
+	P0fOTWgICLAn4p0adzWeTiv82tGesMH8rKIdvOvS4cOrmnnfmbEjm4xy9ZrMLBQaQZOJvFow5gJ
+	Qn6EQF8+5zijJajGmhtZYfSV1+NdW8O1OfSQGWsVQON6paSoI2VRn3GhmVkAcqpXSR5FAiN/zxO
+	U+DXcGPlh06FbWjHsA==
+X-Google-Smtp-Source: AGHT+IGwIBtn4eZSTQj2o3VVVR/du1Kt+ybcF8LV6+0TgcrB4Fp7DksZQFZpP30nzbUfawCZ4sZ4COXvRGlb
+X-Received: by 2002:a05:600c:3844:b0:434:ff08:202b with SMTP id 5b1f17b1804b1-438913dbc09mr81444415e9.12.1737270007727;
+        Sat, 18 Jan 2025 23:00:07 -0800 (PST)
+Return-Path: <it@moneywise.nl>
+Received: from cobra (smtp.moneywise.nl. [217.67.224.79])
+        by smtp-relay.gmail.com with ESMTPS id 5b1f17b1804b1-437c753b3aesm11120505e9.41.2025.01.18.23.00.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Jan 2025 23:00:07 -0800 (PST)
+X-Relaying-Domain: moneywise.nl
+Message-ID: <678ca2f7.050a0220.9a401.195fSMTPIN_ADDED_MISSING@mx.google.com>
+MIME-Version: 1.0
+From: it@moneywise.nl
+To: it@moneywise.nl
+Date: 19 Jan 2025 08:00:07 +0100
+Subject: Historische rendementen OAKK gescraped
+Content-Type: text/html; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+
+Markten BVN: <br/><table>=0A<thead>=0A<tr class=3D"row-1 odd">=0A=
+	<th class=3D"column-1"></th><th class=3D"column-2">Defensief</th=
+><th class=3D"column-3">Gematigd<br> Defensief</th><th class=3D"c=
+olumn-4">Gematigd<br> Offensief</th><th class=3D"column-5">Offens=
+ief</th><th class=3D"column-6">Offensief+</th>=0A</tr>=0A</thead>=
+=0A<tbody class=3D"row-hover">=0A<tr class=3D"row-2 even">=0A	<td=
+ class=3D"column-1">2025<sup>*</sup></td><td class=3D"column-2">+=
+0,09%</td><td class=3D"column-3">+0,42%</td><td class=3D"column-4=
+">+0,75%</td><td class=3D"column-5">+1,09%</td><td class=3D"colum=
+n-6">+1,44%</td>=0A</tr>=0A<tr class=3D"row-3 odd">=0A	<td class=3D=
+"column-1">2024</td><td class=3D"column-2">+5,98%</td><td class=3D=
+"column-3">+10,18%</td><td class=3D"column-4">+14,58%</td><td cla=
+ss=3D"column-5">+19,13%</td><td class=3D"column-6">+23,99%</td>=0A=
+</tr>=0A<tr class=3D"row-4 even">=0A	<td class=3D"column-1">2023<=
+/td><td class=3D"column-2">+6,50%</td><td class=3D"column-3">+9,1=
+7%</td><td class=3D"column-4">+11,78%</td><td class=3D"column-5">=
++14,38%</td><td class=3D"column-6">+16,87%</td>=0A</tr>=0A<tr cla=
+ss=3D"row-5 odd">=0A	<td class=3D"column-1">2022</td><td class=3D=
+"column-2">-13,29%</td><td class=3D"column-3">-13,40%</td><td cla=
+ss=3D"column-4">-13,60%</td><td class=3D"column-5">-13,90%</td><t=
+d class=3D"column-6">-14,39%</td>=0A</tr>=0A<tr class=3D"row-6 ev=
+en">=0A	<td class=3D"column-1">2021</td><td class=3D"column-2">+2=
+,38%</td><td class=3D"column-3">+7,52%</td><td class=3D"column-4"=
+>+13,14%</td><td class=3D"column-5">+18,69%</td><td class=3D"colu=
+mn-6">+23,14%</td>=0A</tr>=0A<tr class=3D"row-7 odd">=0A	<td clas=
+s=3D"column-1">2020</td><td class=3D"column-2">-0,81%</td><td cla=
+ss=3D"column-3">+0,38%</td><td class=3D"column-4">-0,24%</td><td =
+class=3D"column-5">+6,71%</td><td class=3D"column-6">+17,10%</td>=
+=0A</tr>=0A<tr class=3D"row-8 even">=0A	<td class=3D"column-1">20=
+19</td><td class=3D"column-2">+10,75%</td><td class=3D"column-3">=
++14,84%</td><td class=3D"column-4">+18,21%</td><td class=3D"colum=
+n-5">+22,63%</td><td class=3D"column-6">+23,49%</td>=0A</tr>=0A<t=
+r class=3D"row-9 odd">=0A	<td class=3D"column-1">2018</td><td cla=
+ss=3D"column-2">-4,45%</td><td class=3D"column-3">-6,03%</td><td =
+class=3D"column-4">-7,35%</td><td class=3D"column-5">-8,96%</td><=
+td class=3D"column-6">-12,69%</td>=0A</tr>=0A<tr class=3D"row-10 =
+even">=0A	<td class=3D"column-1">2017</td><td class=3D"column-2">=
++2,94%</td><td class=3D"column-3">+6,21%</td><td class=3D"column-=
+4">+8,94%</td><td class=3D"column-5">+11,07%</td><td class=3D"col=
+umn-6">+15,82%</td>=0A</tr>=0A<tr class=3D"row-11 odd">=0A	<td cl=
+ass=3D"column-1">Cumulatief sinds 2017</td><td class=3D"column-2"=
+>+8,36%</td><td class=3D"column-3">+29,40%</td><td class=3D"colum=
+n-4">+50,12%</td><td class=3D"column-5">+86,27%</td><td class=3D"=
+column-6">+126,59%</td>=0A</tr>=0A<tr class=3D"row-12 even">=0A	<=
+td class=3D"column-1">12-maands volatiliteit<sup>**</sup></td><td=
+ class=3D"column-2">+5,54%</td><td class=3D"column-3">+7,18%</td>=
+<td class=3D"column-4">+8,82%</td><td class=3D"column-5">+11,27%<=
+/td><td class=3D"column-6">+14,39%</td>=0A</tr>=0A</tbody>=0A</ta=
+ble><br/><br/>Solid BVN: <br/><table>=0A<thead>=0A<tr class=3D"ro=
+w-1 odd">=0A	<th class=3D"column-1"></th><th class=3D"column-2">D=
+efensief</th><th class=3D"column-3">Gematigd<br> Defensief</th><t=
+h class=3D"column-4">Gematigd<br> Offensief</th><th class=3D"colu=
+mn-5">Offensief</th><th class=3D"column-6">Offensief+</th>=0A</tr=
+>=0A</thead>=0A<tbody class=3D"row-hover">=0A<tr class=3D"row-2 e=
+ven">=0A	<td class=3D"column-1">2025<sup>*</sup></td><td class=3D=
+"column-2">+0,22%</td><td class=3D"column-3">+0,46%</td><td class=
+=3D"column-4">+0,75%</td><td class=3D"column-5">+1,03%</td><td cl=
+ass=3D"column-6">+1,38%</td>=0A</tr>=0A<tr class=3D"row-3 odd">=0A=
+	<td class=3D"column-1">2024</td><td class=3D"column-2">+4,90%</t=
+d><td class=3D"column-3">+8,04%</td><td class=3D"column-4">+10,99=
+%</td><td class=3D"column-5">+14,13%</td><td class=3D"column-6">+=
+18,38%</td>=0A</tr>=0A<tr class=3D"row-4 even">=0A	<td class=3D"c=
+olumn-1">2023</td><td class=3D"column-2">+4,98%</td><td class=3D"=
+column-3">+7,03%</td><td class=3D"column-4">+9,14%</td><td class=3D=
+"column-5">+11,06%</td><td class=3D"column-6">+13,99%</td>=0A</tr=
+>=0A<tr class=3D"row-5 odd">=0A	<td class=3D"column-1">2022</td><=
+td class=3D"column-2">-10,55%</td><td class=3D"column-3">-10,69%<=
+/td><td class=3D"column-4">-10,78%</td><td class=3D"column-5">-11=
+,05%</td><td class=3D"column-6">-12,95%</td>=0A</tr>=0A<tr class=3D=
+"row-6 even">=0A	<td class=3D"column-1">2021</td><td class=3D"col=
+umn-2">+2,92%</td><td class=3D"column-3">+6,87%</td><td class=3D"=
+column-4">+11,54%</td><td class=3D"column-5">+15,54%</td><td clas=
+s=3D"column-6">+19,84%</td>=0A</tr>=0A<tr class=3D"row-7 odd">=0A=
+	<td class=3D"column-1">2020</td><td class=3D"column-2">-1,49%</t=
+d><td class=3D"column-3">+0,04%</td><td class=3D"column-4">+0,28%=
+</td><td class=3D"column-5">+6,02%</td><td class=3D"column-6">+14=
+,71%</td>=0A</tr>=0A<tr class=3D"row-8 even">=0A	<td class=3D"col=
+umn-1">2019</td><td class=3D"column-2">+9,93%</td><td class=3D"co=
+lumn-3">+12,95%</td><td class=3D"column-4">+15,80%</td><td class=3D=
+"column-5">+19,09%</td><td class=3D"column-6">+22,55%</td>=0A</tr=
+>=0A<tr class=3D"row-9 odd">=0A	<td class=3D"column-1">2018</td><=
+td class=3D"column-2">-4,12%</td><td class=3D"column-3">-5,15%</t=
+d><td class=3D"column-4">-6,25%</td><td class=3D"column-5">-7,38%=
+</td><td class=3D"column-6">-11,24%</td>=0A</tr>=0A<tr class=3D"r=
+ow-10 even">=0A	<td class=3D"column-1">2017</td><td class=3D"colu=
+mn-2">+3,19%</td><td class=3D"column-3">+5,87%</td><td class=3D"c=
+olumn-4">+8,22%</td><td class=3D"column-5">+9,84%</td><td class=3D=
+"column-6">+15,34%</td>=0A</tr>=0A<tr class=3D"row-11 odd">=0A	<t=
+d class=3D"column-1">Cumulatief sinds 2017</td><td class=3D"colum=
+n-2">+8,87%</td><td class=3D"column-3">+25,81%</td><td class=3D"c=
+olumn-4">+43,09%</td><td class=3D"column-5">+69,04%</td><td class=
+=3D"column-6">+105,39%</td>=0A</tr>=0A<tr class=3D"row-12 even">=0A=
+	<td class=3D"column-1">12-maands volatiliteit<sup>**</sup></td><=
+td class=3D"column-2">+4,84%</td><td class=3D"column-3">+6,00%</t=
+d><td class=3D"column-4">+7,32%</td><td class=3D"column-5">+9,13%=
+</td><td class=3D"column-6">+12,19%</td>=0A</tr>=0A</tbody>=0A</t=
+able><br/><br/>Markten Dimensional: <br/><table>=0A<thead>=0A<tr =
+class=3D"row-1 odd">=0A	<th class=3D"column-1"></th><th class=3D"=
+column-2">Defensief</th><th class=3D"column-3">Gematigd<br> Defen=
+sief</th><th class=3D"column-4">Gematigd<br> Offensief</th><th cl=
+ass=3D"column-5">Offensief</th><th class=3D"column-6">Offensief+<=
+/th>=0A</tr>=0A</thead>=0A<tbody class=3D"row-hover">=0A<tr class=
+=3D"row-2 even">=0A	<td class=3D"column-1">2025<sup>*</sup></td><=
+td class=3D"column-2">+0,28%</td><td class=3D"column-3">+0,81%</t=
+d><td class=3D"column-4">+1,35%</td><td class=3D"column-5">+1,84%=
+</td><td class=3D"column-6">+2,41%</td>=0A</tr>=0A<tr class=3D"ro=
+w-3 odd">=0A	<td class=3D"column-1">2024</td><td class=3D"column-=
+2">+4,94%</td><td class=3D"column-3">+8,58%</td><td class=3D"colu=
+mn-4">+12,35%</td><td class=3D"column-5">+16,23%</td><td class=3D=
+"column-6">+19,21%</td>=0A</tr>=0A<tr class=3D"row-4 even">=0A	<t=
+d class=3D"column-1">2023</td><td class=3D"column-2">+7,36%</td><=
+td class=3D"column-3">+9,66%</td><td class=3D"column-4">+11,78%</=
+td><td class=3D"column-5">+13,75%</td><td class=3D"column-6">+14,=
+65%</td>=0A</tr>=0A<tr class=3D"row-5 odd">=0A	<td class=3D"colum=
+n-1">2022</td><td class=3D"column-2">-11,19%</td><td class=3D"col=
+umn-3">-12,37%</td><td class=3D"column-4">-12,54%</td><td class=3D=
+"column-5">-12,60%</td><td class=3D"column-6">-11,29%</td>=0A</tr=
+>=0A<tr class=3D"row-6 even">=0A	<td class=3D"column-1">2021</td>=
+<td class=3D"column-2">+2,85%</td><td class=3D"column-3">+8,84%</=
+td><td class=3D"column-4">+15,43%</td><td class=3D"column-5">+21,=
+96%</td><td class=3D"column-6">+28,64%</td>=0A</tr>=0A<tr class=3D=
+"row-7 odd">=0A	<td class=3D"column-1">2020</td><td class=3D"colu=
+mn-2">+0,89%</td><td class=3D"column-3">+1,44%</td><td class=3D"c=
+olumn-4">+2,02%</td><td class=3D"column-5">+1,24%</td><td class=3D=
+"column-6">+1,81%</td>=0A</tr>=0A<tr class=3D"row-8 even">=0A	<td=
+ class=3D"column-1">2019</td><td class=3D"column-2">+4,97%</td><t=
+d class=3D"column-3">+10,19%</td><td class=3D"column-4">+15,31%</=
+td><td class=3D"column-5">+20,30%</td><td class=3D"column-6">+25,=
+96%</td>=0A</tr>=0A<tr class=3D"row-9 odd">=0A	<td class=3D"colum=
+n-1">2018</td><td class=3D"column-2">-3,17%</td><td class=3D"colu=
+mn-3">-4,68%</td><td class=3D"column-4">-6,43%</td><td class=3D"c=
+olumn-5">-8,81%</td><td class=3D"column-6">-10,28%</td>=0A</tr>=0A=
+<tr class=3D"row-10 even">=0A	<td class=3D"column-1">2017</td><td=
+ class=3D"column-2">+0,56%</td><td class=3D"column-3">+2,30%</td>=
+<td class=3D"column-4">+3,86%</td><td class=3D"column-5">+5,25%</=
+td><td class=3D"column-6">+6,96%</td>=0A</tr>=0A<tr class=3D"row-=
+11 odd">=0A	<td class=3D"column-1">Cumulatief sinds 2017</td><td =
+class=3D"column-2">+6,41%</td><td class=3D"column-3">+24,79%</td>=
+<td class=3D"column-4">+46,88%</td><td class=3D"column-5">+67,80%=
+</td><td class=3D"column-6">+96,56%</td>=0A</tr>=0A<tr class=3D"r=
+ow-12 even">=0A	<td class=3D"column-1">12-maands volatiliteit<sup=
+>**</sup></td><td class=3D"column-2">+4,86%</td><td class=3D"colu=
+mn-3">+7,39%</td><td class=3D"column-4">+9,97%</td><td class=3D"c=
+olumn-5">+12,68%</td><td class=3D"column-6">+15,00%</td>=0A</tr>=0A=
+</tbody>=0A</table><br/><br/>Solid Dimensional: <br/><table>=0A<t=
+head>=0A<tr class=3D"row-1 odd">=0A	<th class=3D"column-1"></th><=
+th class=3D"column-2">Defensief</th><th class=3D"column-3">Gemati=
+gd<br> Defensief</th><th class=3D"column-4">Gematigd<br> Offensie=
+f</th><th class=3D"column-5">Offensief</th><th class=3D"column-6"=
+>Offensief+</th>=0A</tr>=0A</thead>=0A<tbody class=3D"row-hover">=
+=0A<tr class=3D"row-2 even">=0A	<td class=3D"column-1">2025<sup>*=
+</sup></td><td class=3D"column-2">+0,36%</td><td class=3D"column-=
+3">+0,76%</td><td class=3D"column-4">+1,20%</td><td class=3D"colu=
+mn-5">+1,60%</td><td class=3D"column-6">+2,16%</td>=0A</tr>=0A<tr=
+ class=3D"row-3 odd">=0A	<td class=3D"column-1">2024</td><td clas=
+s=3D"column-2">+4,12%</td><td class=3D"column-3">+6,86%</td><td c=
+lass=3D"column-4">+9,38%</td><td class=3D"column-5">+12,05%</td><=
+td class=3D"column-6">+14,74%</td>=0A</tr>=0A<tr class=3D"row-4 e=
+ven">=0A	<td class=3D"column-1">2023</td><td class=3D"column-2">+=
+5,60%</td><td class=3D"column-3">+7,38%</td><td class=3D"column-4=
+">+9,15%</td><td class=3D"column-5">+10,61%</td><td class=3D"colu=
+mn-6">+12,28%</td>=0A</tr>=0A<tr class=3D"row-5 odd">=0A	<td clas=
+s=3D"column-1">2022</td><td class=3D"column-2">-8,96%</td><td cla=
+ss=3D"column-3">-9,90%</td><td class=3D"column-4">-9,96%</td><td =
+class=3D"column-5">-10,04%</td><td class=3D"column-6">-10,42%</td=
+>=0A</tr>=0A<tr class=3D"row-6 even">=0A	<td class=3D"column-1">2=
+021</td><td class=3D"column-2">+3,80%</td><td class=3D"column-3">=
++8,41%</td><td class=3D"column-4">+13,72%</td><td class=3D"column=
+-5">+18,28%</td><td class=3D"column-6">+23,70%</td>=0A</tr>=0A<tr=
+ class=3D"row-7 odd">=0A	<td class=3D"column-1">2020</td><td clas=
+s=3D"column-2">-0,68%</td><td class=3D"column-3">+0,47%</td><td c=
+lass=3D"column-4">+1,69%</td><td class=3D"column-5">+1,94%</td><t=
+d class=3D"column-6">+2,57%</td>=0A</tr>=0A<tr class=3D"row-8 eve=
+n">=0A	<td class=3D"column-1">2019</td><td class=3D"column-2">+5,=
+32%</td><td class=3D"column-3">+9,51%</td><td class=3D"column-4">=
++13,68%</td><td class=3D"column-5">+17,43%</td><td class=3D"colum=
+n-6">+24,89%</td>=0A</tr>=0A<tr class=3D"row-9 odd">=0A	<td class=
+=3D"column-1">2018</td><td class=3D"column-2">-3,09%</td><td clas=
+s=3D"column-3">-4,14%</td><td class=3D"column-4">-5,57%</td><td c=
+lass=3D"column-5">-7,29%</td><td class=3D"column-6">-9,61%</td>=0A=
+</tr>=0A<tr class=3D"row-10 even">=0A	<td class=3D"column-1">2017=
+</td><td class=3D"column-2">+1,27%</td><td class=3D"column-3">+2,=
+92%</td><td class=3D"column-4">+4,41%</td><td class=3D"column-5">=
++5,50%</td><td class=3D"column-6">+7,82%</td>=0A</tr>=0A<tr class=
+=3D"row-11 odd">=0A	<td class=3D"column-1">Cumulatief sinds 2017<=
+/td><td class=3D"column-2">+7,05%</td><td class=3D"column-3">+22,=
+59%</td><td class=3D"column-4">+41,00%</td><td class=3D"column-5"=
+>+56,84%</td><td class=3D"column-6">+82,08%</td>=0A</tr>=0A<tr cl=
+ass=3D"row-12 even">=0A	<td class=3D"column-1">12-maands volatili=
+teit<sup>**</sup></td><td class=3D"column-2">+4,17%</td><td class=
+=3D"column-3">+6,09%</td><td class=3D"column-4">+8,11%</td><td cl=
+ass=3D"column-5">+10,14%</td><td class=3D"column-6">+12,70%</td>=0A=
+</tr>=0A</tbody>=0A</table><br/>br/>Updating database for: Markte=
+n BVNPercentage gelijk gebleven: jaar:2025 | profile: Markten BVN=
+ | Risico: Defensief<br/><br/>Percentage gelijk gebleven: jaar:20=
+25 | profile: Markten BVN | Risico: Gematigd Defensief<br/><br/>P=
+ercentage gelijk gebleven: jaar:2025 | profile: Markten BVN | Ris=
+ico: Gematigd Offensief<br/><br/>Percentage gelijk gebleven: jaar=
+:2025 | profile: Markten BVN | Risico: Offensief<br/><br/>Percent=
+age gelijk gebleven: jaar:2025 | profile: Markten BVN | Risico: O=
+ffensief +<br/><br/>Percentage gelijk gebleven: jaar:2024 | profi=
+le: Markten BVN | Risico: Defensief<br/><br/>Percentage gelijk ge=
+bleven: jaar:2024 | profile: Markten BVN | Risico: Gematigd Defen=
+sief<br/><br/>Percentage gelijk gebleven: jaar:2024 | profile: Ma=
+rkten BVN | Risico: Gematigd Offensief<br/><br/>Percentage gelijk=
+ gebleven: jaar:2024 | profile: Markten BVN | Risico: Offensief<b=
+r/><br/>Percentage gelijk gebleven: jaar:2024 | profile: Markten =
+BVN | Risico: Offensief +<br/><br/>Percentage gelijk gebleven: ja=
+ar:2023 | profile: Markten BVN | Risico: Defensief<br/><br/>Perce=
+ntage gelijk gebleven: jaar:2023 | profile: Markten BVN | Risico:=
+ Gematigd Defensief<br/><br/>Percentage gelijk gebleven: jaar:202=
+3 | profile: Markten BVN | Risico: Gematigd Offensief<br/><br/>Pe=
+rcentage gelijk gebleven: jaar:2023 | profile: Markten BVN | Risi=
+co: Offensief<br/><br/>Percentage gelijk gebleven: jaar:2023 | pr=
+ofile: Markten BVN | Risico: Offensief +<br/><br/>Percentage geli=
+jk gebleven: jaar:2022 | profile: Markten BVN | Risico: Defensief=
+<br/><br/>Percentage gelijk gebleven: jaar:2022 | profile: Markte=
+n BVN | Risico: Gematigd Defensief<br/><br/>Percentage gelijk geb=
+leven: jaar:2022 | profile: Markten BVN | Risico: Gematigd Offens=
+ief<br/><br/>Percentage gelijk gebleven: jaar:2022 | profile: Mar=
+kten BVN | Risico: Offensief<br/><br/>Percentage gelijk gebleven:=
+ jaar:2022 | profile: Markten BVN | Risico: Offensief +<br/><br/>=
+Percentage gelijk gebleven: jaar:2021 | profile: Markten BVN | Ri=
+sico: Defensief<br/><br/>Percentage gelijk gebleven: jaar:2021 | =
+profile: Markten BVN | Risico: Gematigd Defensief<br/><br/>Percen=
+tage gelijk gebleven: jaar:2021 | profile: Markten BVN | Risico: =
+Gematigd Offensief<br/><br/>Percentage gelijk gebleven: jaar:2021=
+ | profile: Markten BVN | Risico: Offensief<br/><br/>Percentage g=
+elijk gebleven: jaar:2021 | profile: Markten BVN | Risico: Offens=
+ief +<br/><br/>Percentage gelijk gebleven: jaar:2020 | profile: M=
+arkten BVN | Risico: Defensief<br/><br/>Percentage gelijk gebleve=
+n: jaar:2020 | profile: Markten BVN | Risico: Gematigd Defensief<=
+br/><br/>Percentage gelijk gebleven: jaar:2020 | profile: Markten=
+ BVN | Risico: Gematigd Offensief<br/><br/>Percentage gelijk gebl=
+even: jaar:2020 | profile: Markten BVN | Risico: Offensief<br/><b=
+r/>Percentage gelijk gebleven: jaar:2020 | profile: Markten BVN |=
+ Risico: Offensief +<br/><br/>Percentage gelijk gebleven: jaar:20=
+19 | profile: Markten BVN | Risico: Defensief<br/><br/>Percentage=
+ gelijk gebleven: jaar:2019 | profile: Markten BVN | Risico: Gema=
+tigd Defensief<br/><br/>Percentage gelijk gebleven: jaar:2019 | p=
+rofile: Markten BVN | Risico: Gematigd Offensief<br/><br/>Percent=
+age gelijk gebleven: jaar:2019 | profile: Markten BVN | Risico: O=
+ffensief<br/><br/>Percentage gelijk gebleven: jaar:2019 | profile=
+: Markten BVN | Risico: Offensief +<br/><br/>Percentage gelijk ge=
+bleven: jaar:2018 | profile: Markten BVN | Risico: Defensief<br/>=
+<br/>Percentage gelijk gebleven: jaar:2018 | profile: Markten BVN=
+ | Risico: Gematigd Defensief<br/><br/>Percentage gelijk gebleven=
+: jaar:2018 | profile: Markten BVN | Risico: Gematigd Offensief<b=
+r/><br/>Percentage gelijk gebleven: jaar:2018 | profile: Markten =
+BVN | Risico: Offensief<br/><br/>Percentage gelijk gebleven: jaar=
+:2018 | profile: Markten BVN | Risico: Offensief +<br/><br/>Perce=
+ntage gelijk gebleven: jaar:2017 | profile: Markten BVN | Risico:=
+ Defensief<br/><br/>Percentage gelijk gebleven: jaar:2017 | profi=
+le: Markten BVN | Risico: Gematigd Defensief<br/><br/>Percentage =
+gelijk gebleven: jaar:2017 | profile: Markten BVN | Risico: Gemat=
+igd Offensief<br/><br/>Percentage gelijk gebleven: jaar:2017 | pr=
+ofile: Markten BVN | Risico: Offensief<br/><br/>Percentage gelijk=
+ gebleven: jaar:2017 | profile: Markten BVN | Risico: Offensief +=
+<br/><br/>SKIP: Cumulatief sinds 2017<br/><br/>ERROR: Jaar niet g=
+evonden<br/><br/>SKIP: 12-maands volatiliteit**<br/><br/>ERROR: J=
+aar niet gevonden<br/><br/>br/>Updating database for: Solid BVNPe=
+rcentage gelijk gebleven: jaar:2025 | profile: Solid BVN | Risico=
+: Defensief<br/><br/>Percentage gelijk gebleven: jaar:2025 | prof=
+ile: Solid BVN | Risico: Gematigd Defensief<br/><br/>Percentage g=
+elijk gebleven: jaar:2025 | profile: Solid BVN | Risico: Gematigd=
+ Offensief<br/><br/>Percentage gelijk gebleven: jaar:2025 | profi=
+le: Solid BVN | Risico: Offensief<br/><br/>Percentage gelijk gebl=
+even: jaar:2025 | profile: Solid BVN | Risico: Offensief +<br/><b=
+r/>Percentage gelijk gebleven: jaar:2024 | profile: Solid BVN | R=
+isico: Defensief<br/><br/>Percentage gelijk gebleven: jaar:2024 |=
+ profile: Solid BVN | Risico: Gematigd Defensief<br/><br/>Percent=
+age gelijk gebleven: jaar:2024 | profile: Solid BVN | Risico: Gem=
+atigd Offensief<br/><br/>Percentage gelijk gebleven: jaar:2024 | =
+profile: Solid BVN | Risico: Offensief<br/><br/>Percentage gelijk=
+ gebleven: jaar:2024 | profile: Solid BVN | Risico: Offensief +<b=
+r/><br/>Percentage gelijk gebleven: jaar:2023 | profile: Solid BV=
+N | Risico: Defensief<br/><br/>Percentage gelijk gebleven: jaar:2=
+023 | profile: Solid BVN | Risico: Gematigd Defensief<br/><br/>Pe=
+rcentage gelijk gebleven: jaar:2023 | profile: Solid BVN | Risico=
+: Gematigd Offensief<br/><br/>Percentage gelijk gebleven: jaar:20=
+23 | profile: Solid BVN | Risico: Offensief<br/><br/>Percentage g=
+elijk gebleven: jaar:2023 | profile: Solid BVN | Risico: Offensie=
+f +<br/><br/>Percentage gelijk gebleven: jaar:2022 | profile: Sol=
+id BVN | Risico: Defensief<br/><br/>Percentage gelijk gebleven: j=
+aar:2022 | profile: Solid BVN | Risico: Gematigd Defensief<br/><b=
+r/>Percentage gelijk gebleven: jaar:2022 | profile: Solid BVN | R=
+isico: Gematigd Offensief<br/><br/>Percentage gelijk gebleven: ja=
+ar:2022 | profile: Solid BVN | Risico: Offensief<br/><br/>Percent=
+age gelijk gebleven: jaar:2022 | profile: Solid BVN | Risico: Off=
+ensief +<br/><br/>Percentage gelijk gebleven: jaar:2021 | profile=
+: Solid BVN | Risico: Defensief<br/><br/>Percentage gelijk geblev=
+en: jaar:2021 | profile: Solid BVN | Risico: Gematigd Defensief<b=
+r/><br/>Percentage gelijk gebleven: jaar:2021 | profile: Solid BV=
+N | Risico: Gematigd Offensief<br/><br/>Percentage gelijk gebleve=
+n: jaar:2021 | profile: Solid BVN | Risico: Offensief<br/><br/>Pe=
+rcentage gelijk gebleven: jaar:2021 | profile: Solid BVN | Risico=
+: Offensief +<br/><br/>Percentage gelijk gebleven: jaar:2020 | pr=
+ofile: Solid BVN | Risico: Defensief<br/><br/>Percentage gelijk g=
+ebleven: jaar:2020 | profile: Solid BVN | Risico: Gematigd Defens=
+ief<br/><br/>Percentage gelijk gebleven: jaar:2020 | profile: Sol=
+id BVN | Risico: Gematigd Offensief<br/><br/>Percentage gelijk ge=
+bleven: jaar:2020 | profile: Solid BVN | Risico: Offensief<br/><b=
+r/>Percentage gelijk gebleven: jaar:2020 | profile: Solid BVN | R=
+isico: Offensief +<br/><br/>Percentage gelijk gebleven: jaar:2019=
+ | profile: Solid BVN | Risico: Defensief<br/><br/>Percentage gel=
+ijk gebleven: jaar:2019 | profile: Solid BVN | Risico: Gematigd D=
+efensief<br/><br/>Percentage gelijk gebleven: jaar:2019 | profile=
+: Solid BVN | Risico: Gematigd Offensief<br/><br/>Percentage geli=
+jk gebleven: jaar:2019 | profile: Solid BVN | Risico: Offensief<b=
+r/><br/>Percentage gelijk gebleven: jaar:2019 | profile: Solid BV=
+N | Risico: Offensief +<br/><br/>Percentage gelijk gebleven: jaar=
+:2018 | profile: Solid BVN | Risico: Defensief<br/><br/>Percentag=
+e gelijk gebleven: jaar:2018 | profile: Solid BVN | Risico: Gemat=
+igd Defensief<br/><br/>Percentage gelijk gebleven: jaar:2018 | pr=
+ofile: Solid BVN | Risico: Gematigd Offensief<br/><br/>Percentage=
+ gelijk gebleven: jaar:2018 | profile: Solid BVN | Risico: Offens=
+ief<br/><br/>Percentage gelijk gebleven: jaar:2018 | profile: Sol=
+id BVN | Risico: Offensief +<br/><br/>Percentage gelijk gebleven:=
+ jaar:2017 | profile: Solid BVN | Risico: Defensief<br/><br/>Perc=
+entage gelijk gebleven: jaar:2017 | profile: Solid BVN | Risico: =
+Gematigd Defensief<br/><br/>Percentage gelijk gebleven: jaar:2017=
+ | profile: Solid BVN | Risico: Gematigd Offensief<br/><br/>Perce=
+ntage gelijk gebleven: jaar:2017 | profile: Solid BVN | Risico: O=
+ffensief<br/><br/>Percentage gelijk gebleven: jaar:2017 | profile=
+: Solid BVN | Risico: Offensief +<br/><br/>SKIP: Cumulatief sinds=
+ 2017<br/><br/>ERROR: Jaar niet gevonden<br/><br/>SKIP: 12-maands=
+ volatiliteit**<br/><br/>ERROR: Jaar niet gevonden<br/><br/>br/>U=
+pdating database for: Markten DimensionalPercentage gelijk geblev=
+en: jaar:2025 | profile: Markten Dimensional | Risico: Defensief<=
+br/><br/>Percentage gelijk gebleven: jaar:2025 | profile: Markten=
+ Dimensional | Risico: Gematigd Defensief<br/><br/>Percentage gel=
+ijk gebleven: jaar:2025 | profile: Markten Dimensional | Risico: =
+Gematigd Offensief<br/><br/>Percentage gelijk gebleven: jaar:2025=
+ | profile: Markten Dimensional | Risico: Offensief<br/><br/>Perc=
+entage gelijk gebleven: jaar:2025 | profile: Markten Dimensional =
+| Risico: Offensief +<br/><br/>Percentage gelijk gebleven: jaar:2=
+024 | profile: Markten Dimensional | Risico: Defensief<br/><br/>P=
+ercentage gelijk gebleven: jaar:2024 | profile: Markten Dimension=
+al | Risico: Gematigd Defensief<br/><br/>Percentage gelijk geblev=
+en: jaar:2024 | profile: Markten Dimensional | Risico: Gematigd O=
+ffensief<br/><br/>Percentage gelijk gebleven: jaar:2024 | profile=
+: Markten Dimensional | Risico: Offensief<br/><br/>Percentage gel=
+ijk gebleven: jaar:2024 | profile: Markten Dimensional | Risico: =
+Offensief +<br/><br/>Percentage gelijk gebleven: jaar:2023 | prof=
+ile: Markten Dimensional | Risico: Defensief<br/><br/>Percentage =
+gelijk gebleven: jaar:2023 | profile: Markten Dimensional | Risic=
+o: Gematigd Defensief<br/><br/>Percentage gelijk gebleven: jaar:2=
+023 | profile: Markten Dimensional | Risico: Gematigd Offensief<b=
+r/><br/>Percentage gelijk gebleven: jaar:2023 | profile: Markten =
+Dimensional | Risico: Offensief<br/><br/>Percentage gelijk geblev=
+en: jaar:2023 | profile: Markten Dimensional | Risico: Offensief =
++<br/><br/>Percentage gelijk gebleven: jaar:2022 | profile: Markt=
+en Dimensional | Risico: Defensief<br/><br/>Percentage gelijk geb=
+leven: jaar:2022 | profile: Markten Dimensional | Risico: Gematig=
+d Defensief<br/><br/>Percentage gelijk gebleven: jaar:2022 | prof=
+ile: Markten Dimensional | Risico: Gematigd Offensief<br/><br/>Pe=
+rcentage gelijk gebleven: jaar:2022 | profile: Markten Dimensiona=
+l | Risico: Offensief<br/><br/>Percentage gelijk gebleven: jaar:2=
+022 | profile: Markten Dimensional | Risico: Offensief +<br/><br/=
+>Percentage gelijk gebleven: jaar:2021 | profile: Markten Dimensi=
+onal | Risico: Defensief<br/><br/>Percentage gelijk gebleven: jaa=
+r:2021 | profile: Markten Dimensional | Risico: Gematigd Defensie=
+f<br/><br/>Percentage gelijk gebleven: jaar:2021 | profile: Markt=
+en Dimensional | Risico: Gematigd Offensief<br/><br/>Percentage g=
+elijk gebleven: jaar:2021 | profile: Markten Dimensional | Risico=
+: Offensief<br/><br/>Percentage gelijk gebleven: jaar:2021 | prof=
+ile: Markten Dimensional | Risico: Offensief +<br/><br/>Percentag=
+e gelijk gebleven: jaar:2020 | profile: Markten Dimensional | Ris=
+ico: Defensief<br/><br/>Percentage gelijk gebleven: jaar:2020 | p=
+rofile: Markten Dimensional | Risico: Gematigd Defensief<br/><br/=
+>Percentage gelijk gebleven: jaar:2020 | profile: Markten Dimensi=
+onal | Risico: Gematigd Offensief<br/><br/>Percentage gelijk gebl=
+even: jaar:2020 | profile: Markten Dimensional | Risico: Offensie=
+f<br/><br/>Percentage gelijk gebleven: jaar:2020 | profile: Markt=
+en Dimensional | Risico: Offensief +<br/><br/>Percentage gelijk g=
+ebleven: jaar:2019 | profile: Markten Dimensional | Risico: Defen=
+sief<br/><br/>Percentage gelijk gebleven: jaar:2019 | profile: Ma=
+rkten Dimensional | Risico: Gematigd Defensief<br/><br/>Percentag=
+e gelijk gebleven: jaar:2019 | profile: Markten Dimensional | Ris=
+ico: Gematigd Offensief<br/><br/>Percentage gelijk gebleven: jaar=
+:2019 | profile: Markten Dimensional | Risico: Offensief<br/><br/=
+>Percentage gelijk gebleven: jaar:2019 | profile: Markten Dimensi=
+onal | Risico: Offensief +<br/><br/>Percentage gelijk gebleven: j=
+aar:2018 | profile: Markten Dimensional | Risico: Defensief<br/><=
+br/>Percentage gelijk gebleven: jaar:2018 | profile: Markten Dime=
+nsional | Risico: Gematigd Defensief<br/><br/>Percentage gelijk g=
+ebleven: jaar:2018 | profile: Markten Dimensional | Risico: Gemat=
+igd Offensief<br/><br/>Percentage gelijk gebleven: jaar:2018 | pr=
+ofile: Markten Dimensional | Risico: Offensief<br/><br/>Percentag=
+e gelijk gebleven: jaar:2018 | profile: Markten Dimensional | Ris=
+ico: Offensief +<br/><br/>Percentage gelijk gebleven: jaar:2017 |=
+ profile: Markten Dimensional | Risico: Defensief<br/><br/>Percen=
+tage gelijk gebleven: jaar:2017 | profile: Markten Dimensional | =
+Risico: Gematigd Defensief<br/><br/>Percentage gelijk gebleven: j=
+aar:2017 | profile: Markten Dimensional | Risico: Gematigd Offens=
+ief<br/><br/>Percentage gelijk gebleven: jaar:2017 | profile: Mar=
+kten Dimensional | Risico: Offensief<br/><br/>Percentage gelijk g=
+ebleven: jaar:2017 | profile: Markten Dimensional | Risico: Offen=
+sief +<br/><br/>SKIP: Cumulatief sinds 2017<br/><br/>ERROR: Jaar =
+niet gevonden<br/><br/>SKIP: 12-maands volatiliteit**<br/><br/>ER=
+ROR: Jaar niet gevonden<br/><br/>br/>Updating database for: Solid=
+ DimensionalPercentage gelijk gebleven: jaar:2025 | profile: Soli=
+d Dimensional | Risico: Defensief<br/><br/>Percentage gelijk gebl=
+even: jaar:2025 | profile: Solid Dimensional | Risico: Gematigd D=
+efensief<br/><br/>Percentage gelijk gebleven: jaar:2025 | profile=
+: Solid Dimensional | Risico: Gematigd Offensief<br/><br/>Percent=
+age gelijk gebleven: jaar:2025 | profile: Solid Dimensional | Ris=
+ico: Offensief<br/><br/>Percentage gelijk gebleven: jaar:2025 | p=
+rofile: Solid Dimensional | Risico: Offensief +<br/><br/>Percenta=
+ge gelijk gebleven: jaar:2024 | profile: Solid Dimensional | Risi=
+co: Defensief<br/><br/>Percentage gelijk gebleven: jaar:2024 | pr=
+ofile: Solid Dimensional | Risico: Gematigd Defensief<br/><br/>Pe=
+rcentage gelijk gebleven: jaar:2024 | profile: Solid Dimensional =
+| Risico: Gematigd Offensief<br/><br/>Percentage gelijk gebleven:=
+ jaar:2024 | profile: Solid Dimensional | Risico: Offensief<br/><=
+br/>Percentage gelijk gebleven: jaar:2024 | profile: Solid Dimens=
+ional | Risico: Offensief +<br/><br/>Percentage gelijk gebleven: =
+jaar:2023 | profile: Solid Dimensional | Risico: Defensief<br/><b=
+r/>Percentage gelijk gebleven: jaar:2023 | profile: Solid Dimensi=
+onal | Risico: Gematigd Defensief<br/><br/>Percentage gelijk gebl=
+even: jaar:2023 | profile: Solid Dimensional | Risico: Gematigd O=
+ffensief<br/><br/>Percentage gelijk gebleven: jaar:2023 | profile=
+: Solid Dimensional | Risico: Offensief<br/><br/>Percentage gelij=
+k gebleven: jaar:2023 | profile: Solid Dimensional | Risico: Offe=
+nsief +<br/><br/>Percentage gelijk gebleven: jaar:2022 | profile:=
+ Solid Dimensional | Risico: Defensief<br/><br/>Percentage gelijk=
+ gebleven: jaar:2022 | profile: Solid Dimensional | Risico: Gemat=
+igd Defensief<br/><br/>Percentage gelijk gebleven: jaar:2022 | pr=
+ofile: Solid Dimensional | Risico: Gematigd Offensief<br/><br/>Pe=
+rcentage gelijk gebleven: jaar:2022 | profile: Solid Dimensional =
+| Risico: Offensief<br/><br/>Percentage gelijk gebleven: jaar:202=
+2 | profile: Solid Dimensional | Risico: Offensief +<br/><br/>Per=
+centage gelijk gebleven: jaar:2021 | profile: Solid Dimensional |=
+ Risico: Defensief<br/><br/>Percentage gelijk gebleven: jaar:2021=
+ | profile: Solid Dimensional | Risico: Gematigd Defensief<br/><b=
+r/>Percentage gelijk gebleven: jaar:2021 | profile: Solid Dimensi=
+onal | Risico: Gematigd Offensief<br/><br/>Percentage gelijk gebl=
+even: jaar:2021 | profile: Solid Dimensional | Risico: Offensief<=
+br/><br/>Percentage gelijk gebleven: jaar:2021 | profile: Solid D=
+imensional | Risico: Offensief +<br/><br/>Percentage gelijk geble=
+ven: jaar:2020 | profile: Solid Dimensional | Risico: Defensief<b=
+r/><br/>Percentage gelijk gebleven: jaar:2020 | profile: Solid Di=
+mensional | Risico: Gematigd Defensief<br/><br/>Percentage gelijk=
+ gebleven: jaar:2020 | profile: Solid Dimensional | Risico: Gemat=
+igd Offensief<br/><br/>Percentage gelijk gebleven: jaar:2020 | pr=
+ofile: Solid Dimensional | Risico: Offensief<br/><br/>Percentage =
+gelijk gebleven: jaar:2020 | profile: Solid Dimensional | Risico:=
+ Offensief +<br/><br/>Percentage gelijk gebleven: jaar:2019 | pro=
+file: Solid Dimensional | Risico: Defensief<br/><br/>Percentage g=
+elijk gebleven: jaar:2019 | profile: Solid Dimensional | Risico: =
+Gematigd Defensief<br/><br/>Percentage gelijk gebleven: jaar:2019=
+ | profile: Solid Dimensional | Risico: Gematigd Offensief<br/><b=
+r/>Percentage gelijk gebleven: jaar:2019 | profile: Solid Dimensi=
+onal | Risico: Offensief<br/><br/>Percentage gelijk gebleven: jaa=
+r:2019 | profile: Solid Dimensional | Risico: Offensief +<br/><br=
+/>Percentage gelijk gebleven: jaar:2018 | profile: Solid Dimensio=
+nal | Risico: Defensief<br/><br/>Percentage gelijk gebleven: jaar=
+:2018 | profile: Solid Dimensional | Risico: Gematigd Defensief<b=
+r/><br/>Percentage gelijk gebleven: jaar:2018 | profile: Solid Di=
+mensional | Risico: Gematigd Offensief<br/><br/>Percentage gelijk=
+ gebleven: jaar:2018 | profile: Solid Dimensional | Risico: Offen=
+sief<br/><br/>Percentage gelijk gebleven: jaar:2018 | profile: So=
+lid Dimensional | Risico: Offensief +<br/><br/>Percentage gelijk =
+gebleven: jaar:2017 | profile: Solid Dimensional | Risico: Defens=
+ief<br/><br/>Percentage gelijk gebleven: jaar:2017 | profile: Sol=
+id Dimensional | Risico: Gematigd Defensief<br/><br/>Percentage g=
+elijk gebleven: jaar:2017 | profile: Solid Dimensional | Risico: =
+Gematigd Offensief<br/><br/>Percentage gelijk gebleven: jaar:2017=
+ | profile: Solid Dimensional | Risico: Offensief<br/><br/>Percen=
+tage gelijk gebleven: jaar:2017 | profile: Solid Dimensional | Ri=
+sico: Offensief +<br/><br/>SKIP: Cumulatief sinds 2017<br/><br/>E=
+RROR: Jaar niet gevonden<br/><br/>SKIP: 12-maands volatiliteit**<=
+br/><br/>ERROR: Jaar niet gevonden<br/><br/>
+

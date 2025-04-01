@@ -25,4 +25,10 @@
 		</None>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="Html\MustExist.txt">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 </Project>
