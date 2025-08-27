@@ -25,7 +25,7 @@ static async Task ShowPartsAsync(int Depth, MimePart part)
 	}
 
 
-	if(contentType.StartsWith("text/html"))
+	if (contentType.StartsWith("text/html"))
 	{
 		//await File.WriteAllTextAsync("a.html", part.TextContent, Encoding.GetEncoding( part.CharSet));
 	}
@@ -44,12 +44,14 @@ static async Task ShowPartsAsync(int Depth, MimePart part)
 
 var sw = Stopwatch.StartNew();
 
-//var email = await FastHelper.ReadEmlAsync(@"input\20240603-135130.eml");
-var email = await MimePart.ReadEmlAsync(@"input\jun-jul 2024.eml");
+foreach (var path in Directory.EnumerateFiles(@"C:\Users\alphons\Downloads\Rentes2", "*.eml"))
+{
 
-await ShowPartsAsync(0, email);
+	var email = await MimePart.ReadEmlAsync(@"input\jun-jul 2024.eml");
 
-Debug.WriteLine(sw.ElapsedMilliseconds + "mS");
+	await ShowPartsAsync(0, email);
 
+	Debug.WriteLine(sw.ElapsedMilliseconds + "mS");
+}
 Console.Write("enter");
 Console.ReadLine();

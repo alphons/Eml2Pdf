@@ -75,6 +75,30 @@ public partial class Form1 : Form
 		}
 	}
 
+	static async Task SaveHtmlMailBodyAsync(TextBox log, string OutputDir, MimePart part)
+	{
+
+		if (DateTime.TryParse(part["Date"], out DateTime dtm))
+		{
+			var outputPath = Path.Combine(OutputDir, $"{dtm:yyyyMMdd-HHmmss}.eml");
+
+			try
+			{
+				await part.SaveAsync(outputPath, dtm);
+			}
+			catch (Exception ex)
+			{
+				log.Invoke((MethodInvoker)delegate
+				{
+					log.Text = $"{outputPath} {ex.Message}";
+				});
+			}
+		}
+	}
+
+
+
+
 
 	private async void Button2_Click(object sender, EventArgs e)
 	{
@@ -86,6 +110,7 @@ public partial class Form1 : Form
 		{
 			var email = await MimePart.ReadEmlAsync(emlPath);
 
+			//await SaveHtmlMailBodyAsync(this.txtLog, this.txtOutput.Text, email);
 			await SaveMailAttachementsAsync(this.txtLog, this.txtOutput.Text, email);
 		}
 
@@ -138,7 +163,7 @@ public partial class Form1 : Form
 				File.SetCreationTime(output, dtm);
 
 			}
-			catch(Exception eee)
+			catch (Exception eee)
 			{
 				this.txtLog.Invoke((MethodInvoker)delegate
 				{
